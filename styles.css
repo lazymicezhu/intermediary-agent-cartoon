@@ -1,0 +1,320 @@
+:root {
+  --bg: #faf9f6;
+  --ink: #141414;
+  --paper: #ffffff;
+  --accent-blue: #9bb8ff;
+  --transition: 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  --main-panel-size: 260px;
+  --option-panel-size: 170px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.app-shell {
+  width: min(1180px, calc(100vw - 64px));
+  margin: 0 auto;
+  padding: 52px 0 56px;
+}
+
+.story-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: transparent;
+  min-height: calc(var(--main-panel-size) * 2 + var(--option-panel-size) + 40px);
+}
+
+.chapter-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  transition: transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.chapter {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  align-items: center;
+  transition:
+    transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 1000ms ease,
+    filter 1000ms ease;
+}
+
+.chapter.is-leaving {
+  transform: translateX(-100%);
+  opacity: 1;
+  filter: none;
+}
+
+.chapter.is-entering {
+  transform: translateX(100%);
+  opacity: 1;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, var(--main-panel-size));
+  grid-template-rows: repeat(2, var(--main-panel-size));
+  gap: 0;
+  width: fit-content;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--paper);
+  transition: grid-template-columns var(--transition), gap var(--transition);
+}
+
+.chapter.is-complete .chapter-grid {
+  grid-template-columns: repeat(4, var(--main-panel-size));
+  grid-template-rows: 1fr;
+  gap: 0;
+  border-radius: 0;
+  transition:
+    grid-template-columns 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+    grid-template-rows 1000ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.comic-panel {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+  padding: 0;
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition:
+    opacity 560ms ease,
+    transform 560ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.comic-panel.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.comic-panel.is-drop-target {
+  background: #f5f5f1;
+}
+
+.comic-panel.is-over {
+  box-shadow: inset 0 0 0 6px rgba(155, 184, 255, 0.24);
+}
+
+.comic-panel.is-empty .panel-art,
+.comic-panel.is-empty::after {
+  opacity: 0.42;
+}
+
+.comic-panel.is-option {
+  width: var(--option-panel-size);
+  height: var(--option-panel-size);
+  cursor: grab;
+  opacity: 1;
+  transform: none;
+  border-radius: 0;
+  touch-action: none;
+  user-select: none;
+  transition:
+    transform 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1200ms ease,
+    filter 1200ms ease;
+}
+
+.comic-panel.is-option:active {
+  cursor: grabbing;
+}
+
+.panel-art {
+  height: 100%;
+  min-height: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  background-position: center;
+  background-size: cover;
+  transition:
+    opacity 1100ms ease,
+    filter 1100ms ease,
+    transform 1100ms ease;
+}
+
+.option-strip {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.option-strip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.option-strip__title {
+  display: none;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  width: fit-content;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+.options.is-frozen {
+  position: relative;
+}
+
+.options.is-frozen .comic-panel.is-option {
+  position: absolute;
+  margin: 0;
+}
+
+.comic-panel.is-option.is-dragging {
+  opacity: 0;
+}
+
+.chapter.is-transitioning .option-strip {
+  pointer-events: none;
+}
+
+.chapter.is-complete .option-strip {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.chapter.is-transitioning .comic-panel.is-option.is-used {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.comic-panel.is-option.is-bursting {
+  opacity: 0;
+  filter: blur(20px);
+  transform: translateY(-10px) scale(1.02);
+  pointer-events: none;
+}
+
+.comic-panel.is-option.is-bursting .panel-art {
+  opacity: 0.08;
+  filter: blur(26px) saturate(0.92) brightness(1.05);
+  transform: translateY(-8px) scale(1.06);
+}
+
+.particle {
+  position: absolute;
+  width: var(--w, 32px);
+  height: var(--h, 18px);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.46), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(0.92);
+  filter: blur(6px);
+  mix-blend-mode: screen;
+  animation: feather-dissolve var(--duration, 1400ms) cubic-bezier(0.16, 0.84, 0.32, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes feather-dissolve {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.86);
+    filter: blur(3px);
+  }
+
+  16% {
+    opacity: 0.32;
+  }
+
+  55% {
+    opacity: 0.18;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate3d(var(--dx, 0px), var(--dy, 0px), 0)
+      scale(1.2);
+    filter: blur(14px);
+  }
+}
+
+.comic-panel.is-empty::after {
+  content: "拖到这里";
+  position: absolute;
+  inset: auto 0 26px;
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: rgba(20, 20, 20, 0.26);
+}
+
+@media (max-width: 920px) {
+  :root {
+    --main-panel-size: min(38vw, 220px);
+    --option-panel-size: min(22vw, 150px);
+  }
+
+  .chapter.is-complete .chapter-grid {
+    grid-template-columns: repeat(2, var(--main-panel-size));
+    grid-template-rows: repeat(2, var(--main-panel-size));
+  }
+
+  .options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media (max-width: 560px) {
+  :root {
+    --main-panel-size: min(42vw, 180px);
+    --option-panel-size: min(42vw, 150px);
+  }
+
+  .app-shell {
+    width: min(100vw - 28px, 100%);
+    padding-top: 24px;
+  }
+
+  .options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .comic-panel.is-option {
+    width: var(--option-panel-size);
+    height: var(--option-panel-size);
+  }
+}

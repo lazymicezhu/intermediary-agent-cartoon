@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>失信漫画平台原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="story-stage">
+        <div class="chapter-track" id="chapter-track" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <template id="chapter-template">
+      <article class="chapter">
+        <div class="chapter-grid"></div>
+        <div class="option-strip">
+          <div class="option-strip__title">拖动下面的漫画补上最后一格</div>
+          <div class="options"></div>
+        </div>
+      </article>
+    </template>
+
+    <template id="panel-template">
+      <section class="comic-panel">
+        <div class="panel-art"></div>
+      </section>
+    </template>
+
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
