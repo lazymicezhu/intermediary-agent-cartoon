@@ -141,6 +141,8 @@ function buildChapter(chapter, index) {
   });
 
   options.addEventListener("pointerdown", handlePointerDown);
+  options.addEventListener("pointermove", handleOptionHoverMove);
+  options.addEventListener("pointerleave", handleOptionHoverLeave);
 
   return chapterNode;
 }
@@ -231,6 +233,40 @@ function handlePointerMove(event) {
   updateDropTarget(event.clientX, event.clientY);
 }
 
+function handleOptionHoverMove(event) {
+  if (isAnimating || activeDrag) {
+    return;
+  }
+
+  const optionCard = event.target.closest(".is-option");
+  const options = event.currentTarget.querySelectorAll(".is-option");
+  options.forEach((option) => {
+    option.classList.remove("is-hover-left", "is-hover-right", "is-hover-center");
+  });
+
+  if (!optionCard) {
+    return;
+  }
+
+  const rect = optionCard.getBoundingClientRect();
+  const relativeX = event.clientX - rect.left;
+  const ratio = relativeX / rect.width;
+
+  if (ratio < 0.38) {
+    optionCard.classList.add("is-hover-left");
+  } else if (ratio > 0.62) {
+    optionCard.classList.add("is-hover-right");
+  } else {
+    optionCard.classList.add("is-hover-center");
+  }
+}
+
+function handleOptionHoverLeave(event) {
+  event.currentTarget.querySelectorAll(".is-option").forEach((option) => {
+    option.classList.remove("is-hover-left", "is-hover-right", "is-hover-center");
+  });
+}
+
 function handlePointerUp(event) {
   if (!activeDrag || event.pointerId !== activeDrag.pointerId) {
     return;
@@ -287,6 +323,7 @@ function cleanupActiveDrag() {
 
   const { source, visual, pointerId } = activeDrag;
   source.classList.remove("is-dragging");
+  source.classList.remove("is-hover-left", "is-hover-right", "is-hover-center");
   source.removeEventListener("pointermove", handlePointerMove);
   source.removeEventListener("pointerup", handlePointerUp);
   source.removeEventListener("pointercancel", handlePointerUp);
