@@ -69,15 +69,23 @@ const chapterData = [
   },
 ];
 
-const revealDelay = 2000;
+const revealDelay = 1500;
+const dissolveDuration = 1200;
+const chapterSlideDuration = 1200;
 const track = document.querySelector("#chapter-track");
 const chapterTemplate = document.querySelector("#chapter-template");
 const panelTemplate = document.querySelector("#panel-template");
+const overviewChapterTemplate = document.querySelector("#overview-chapter-template");
+const storyStage = document.querySelector(".story-stage");
+const chapterOverview = document.querySelector("#chapter-overview");
+const overviewGrid = document.querySelector("#overview-grid");
 
 let currentChapterIndex = 0;
 let isAnimating = false;
 let activeDrag = null;
 let dissolvingOptions = [];
+let revealTimeouts = [];
+const selectedOptions = new Map();
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -88,11 +96,16 @@ function wait(ms) {
 function createPanel(panel, extraClasses = []) {
   const panelNode = panelTemplate.content.firstElementChild.cloneNode(true);
   panelNode.classList.add(...extraClasses);
-  const art = panelNode.querySelector(".panel-art");
-  art.style.backgroundImage = panel.image.startsWith("linear-gradient")
-    ? panel.image
-    : `url("${panel.image}")`;
+  panelNode.dataset.image = panel.image;
+  applyPanelImage(panelNode, panel.image);
   return panelNode;
+}
+
+function applyPanelImage(panelNode, image) {
+  const art = panelNode.querySelector(".panel-art");
+  art.style.backgroundImage = image.startsWith("linear-gradient")
+    ? image
+    : `url("${image}")`;
 }
 
 function createEmptySlot() {
@@ -133,22 +146,33 @@ function buildChapter(chapter, index) {
 }
 
 function revealPanels(chapterNode) {
+  clearRevealTimers();
+
   const gridPanels = [...chapterNode.querySelectorAll(".chapter-grid .comic-panel")];
   const optionStrip = chapterNode.querySelector(".option-strip");
   gridPanels.forEach((panel) => panel.classList.remove("is-visible"));
   optionStrip.classList.remove("is-visible");
 
   gridPanels.slice(0, 3).forEach((panel, index) => {
-    window.setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       panel.classList.add("is-visible");
     }, index * revealDelay);
+    revealTimeouts.push(timeoutId);
   });
 
-  window.setTimeout(() => {
+  const slotTimeoutId = window.setTimeout(() => {
     const slot = gridPanels[3];
     slot.classList.add("is-visible");
     optionStrip.classList.add("is-visible");
   }, 3 * revealDelay);
+  revealTimeouts.push(slotTimeoutId);
+}
+
+function clearRevealTimers() {
+  revealTimeouts.forEach((timeoutId) => {
+    window.clearTimeout(timeoutId);
+  });
+  revealTimeouts = [];
 }
 
 function handlePointerDown(event) {
@@ -216,13 +240,11 @@ function handlePointerUp(event) {
   clearDropTargets();
 
   const dropSlot = getActiveDropSlot(event.clientX, event.clientY);
+  cleanupActiveDrag();
+
   if (dropSlot) {
     fillSlot(dropSlot, source);
-  } else {
-    source.classList.remove("is-dragging");
   }
-
-  cleanupActiveDrag();
 }
 
 function updateDragPosition(clientX, clientY) {
@@ -276,11 +298,11 @@ function cleanupActiveDrag() {
 }
 
 function fillSlot(slot, optionCard) {
-  slot.className = optionCard.className.replace("is-option", "").trim();
+  slot.className = "comic-panel is-visible";
   slot.dataset.role = "filled-slot";
-  slot.querySelector(".panel-art").style.backgroundImage =
-    optionCard.querySelector(".panel-art").style.backgroundImage;
-  slot.classList.add("is-visible");
+  slot.dataset.image = optionCard.dataset.image;
+  applyPanelImage(slot, optionCard.dataset.image);
+  selectedOptions.set(currentChapterIndex, optionCard.dataset.image);
 
   const chapterNode = slot.closest(".chapter");
   dissolvingOptions = freezeOptionsLayout(chapterNode, optionCard);
@@ -290,14 +312,15 @@ function fillSlot(slot, optionCard) {
 }
 
 async function runChapterTransition(chapterNode) {
+  clearRevealTimers();
+
   await wait(520);
 
   burstRemainingOptions(chapterNode);
   chapterNode.classList.add("is-transitioning");
 
-  await wait(1360);
+  await wait(dissolveDuration);
 
-  chapterNode.classList.add("is-complete");
   chapterNode.querySelector(".option-strip").classList.remove("is-visible");
 
   await wait(1200);
@@ -377,27 +400,81 @@ function createParticles(container, rect, containerRect) {
 async function goToNextChapter() {
   const nextIndex = currentChapterIndex + 1;
   if (nextIndex >= chapterData.length) {
+    await showAllChaptersOverview(track.children[currentChapterIndex]);
     isAnimating = false;
     return;
   }
 
-  const currentChapter = track.children[currentChapterIndex];
   const nextChapter = track.children[nextIndex];
-  nextChapter.classList.add("is-entering");
+  revealPanels(nextChapter);
 
-  await wait(40);
-
-  currentChapter.classList.add("is-leaving");
   track.style.transform = `translateX(-${nextIndex * 100}%)`;
   currentChapterIndex = nextIndex;
 
-  await wait(1400);
+  await wait(chapterSlideDuration);
 
-  nextChapter.classList.remove("is-entering");
-  currentChapter.classList.remove("is-leaving");
-
-  revealPanels(nextChapter);
   isAnimating = false;
+}
+
+function clearFrozenOptionState(chapterNode) {
+  const optionStrip = chapterNode.querySelector(".option-strip");
+  const optionsContainer = chapterNode.querySelector(".options");
+
+  optionStrip.classList.remove("is-visible");
+  optionStrip.style.display = "none";
+  optionsContainer.classList.remove("is-frozen");
+  optionsContainer.style.width = "";
+  optionsContainer.style.height = "";
+
+  optionsContainer.querySelectorAll(".is-option").forEach((option) => {
+    option.classList.remove("is-bursting", "is-dragging", "is-used");
+    option.style.left = "";
+    option.style.top = "";
+    option.style.width = "";
+    option.style.height = "";
+  });
+}
+
+async function showAllChaptersOverview(currentChapterNode) {
+  clearRevealTimers();
+  clearFrozenOptionState(currentChapterNode);
+  overviewGrid.replaceChildren();
+
+  chapterData.forEach((chapter, chapterIndex) => {
+    const chapterCard = overviewChapterTemplate.content.firstElementChild.cloneNode(true);
+    const grid = chapterCard.querySelector(".chapter-grid");
+    chapterCard.querySelector(".overview-label").textContent = `第 ${chapterIndex + 1} 章`;
+
+    chapter.panels.forEach((panel) => {
+      const panelNode = createPanel(panel);
+      panelNode.classList.add("is-visible");
+      grid.append(panelNode);
+    });
+
+    const finalImage = selectedOptions.get(chapterIndex) ?? chapter.options[0].image;
+    const finalPanel = createPanel({ image: finalImage });
+    finalPanel.classList.add("is-visible");
+    grid.append(finalPanel);
+
+    overviewGrid.append(chapterCard);
+  });
+
+  storyStage.style.transition = "opacity 500ms ease, transform 500ms ease";
+  storyStage.style.opacity = "0";
+  storyStage.style.transform = "translateY(-18px)";
+
+  await wait(520);
+
+  storyStage.hidden = true;
+  chapterOverview.hidden = false;
+  requestAnimationFrame(() => {
+    chapterOverview.classList.add("is-visible");
+  });
+
+  await wait(720);
+  storyStage.style.transition = "";
+  storyStage.style.opacity = "";
+  storyStage.style.transform = "";
 }
 
 function render() {

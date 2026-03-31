@@ -11,6 +11,9 @@
       <section class="story-stage">
         <div class="chapter-track" id="chapter-track" aria-live="polite"></div>
       </section>
+      <section class="chapter-overview" id="chapter-overview" hidden>
+        <div class="overview-grid" id="overview-grid"></div>
+      </section>
     </main>
 
     <template id="chapter-template">
@@ -27,6 +30,13 @@
       <section class="comic-panel">
         <div class="panel-art"></div>
       </section>
+    </template>
+
+    <template id="overview-chapter-template">
+      <article class="overview-chapter">
+        <div class="overview-label"></div>
+        <div class="chapter-grid"></div>
+      </article>
     </template>
 
     <script type="module" src="./script.js"></script>

@@ -2,6 +2,7 @@
   --bg: #faf9f6;
   --ink: #141414;
   --paper: #ffffff;
+  --panel-line: #111111;
   --accent-blue: #9bb8ff;
   --transition: 720ms cubic-bezier(0.22, 1, 0.36, 1);
   --main-panel-size: 260px;
@@ -34,11 +35,54 @@ body {
   min-height: calc(var(--main-panel-size) * 2 + var(--option-panel-size) + 40px);
 }
 
+.chapter-overview[hidden] {
+  display: none;
+}
+
+.chapter-overview {
+  padding: 8px 0 24px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.chapter-overview.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 36px;
+}
+
+.overview-chapter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
+
+.overview-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(20, 20, 20, 0.7);
+}
+
+.overview-chapter .chapter-grid {
+  transform: scale(0.72);
+  transform-origin: top center;
+  margin: 0;
+}
+
 .chapter-track {
   display: flex;
   align-items: stretch;
   gap: 0;
-  transition: transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.2, 1);
   will-change: transform;
 }
 
@@ -49,47 +93,20 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 48px;
   align-items: center;
-  transition:
-    transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    opacity 1000ms ease,
-    filter 1000ms ease;
-}
-
-.chapter.is-leaving {
-  transform: translateX(-100%);
-  opacity: 1;
-  filter: none;
-}
-
-.chapter.is-entering {
-  transform: translateX(100%);
-  opacity: 1;
 }
 
 .chapter-grid {
   display: grid;
   grid-template-columns: repeat(2, var(--main-panel-size));
   grid-template-rows: repeat(2, var(--main-panel-size));
-  gap: 0;
+  gap: 18px;
   width: fit-content;
   margin: 0 auto;
-  overflow: hidden;
-  border-radius: 0;
-  background: var(--paper);
-  transition: grid-template-columns var(--transition), gap var(--transition);
-}
-
-.chapter.is-complete .chapter-grid {
-  grid-template-columns: repeat(4, var(--main-panel-size));
-  grid-template-rows: 1fr;
-  gap: 0;
-  border-radius: 0;
-  transition:
-    grid-template-columns 1000ms cubic-bezier(0.22, 1, 0.36, 1),
-    grid-template-rows 1000ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: visible;
+  background: transparent;
+  transition: transform var(--transition), opacity var(--transition);
 }
 
 .comic-panel {
@@ -99,7 +116,8 @@ body {
   position: relative;
   padding: 0;
   border-radius: 0;
-  background: var(--paper);
+  border: 4px solid var(--panel-line);
+  background: #fbf7ed;
   box-shadow: none;
   overflow: hidden;
   opacity: 0;
@@ -118,11 +136,11 @@ body {
 }
 
 .comic-panel.is-drop-target {
-  background: #f5f5f1;
+  background: #fbf7ed;
 }
 
 .comic-panel.is-over {
-  box-shadow: inset 0 0 0 6px rgba(155, 184, 255, 0.24);
+  box-shadow: inset 0 0 0 6px rgba(155, 184, 255, 0.2);
 }
 
 .comic-panel.is-empty .panel-art,
@@ -137,6 +155,7 @@ body {
   opacity: 1;
   transform: none;
   border-radius: 0;
+  border-width: 3px;
   touch-action: none;
   user-select: none;
   transition:
@@ -156,6 +175,7 @@ body {
   overflow: hidden;
   background-position: center;
   background-size: cover;
+  background-color: #e9dfca;
   transition:
     opacity 1100ms ease,
     filter 1100ms ease,
@@ -185,7 +205,7 @@ body {
 .options {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 28px;
   width: fit-content;
   margin: 0 auto;
   justify-items: center;
@@ -206,11 +226,6 @@ body {
 
 .chapter.is-transitioning .option-strip {
   pointer-events: none;
-}
-
-.chapter.is-complete .option-strip {
-  opacity: 0;
-  transform: translateY(24px);
 }
 
 .chapter.is-transitioning .comic-panel.is-option.is-used {
@@ -293,6 +308,7 @@ body {
 
   .options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
   }
 
 }
@@ -310,7 +326,7 @@ body {
 
   .options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 18px;
   }
 
   .comic-panel.is-option {
