@@ -1,5 +1,6 @@
 const chapterData = [
   {
+    caption: "林影与潮湿的风在远处慢慢交叠，昏暗天色里浮起一线微光，像沉寂已久的道路终于显露出它真正通往的方向",
     panels: [
       {
         image:
@@ -34,6 +35,7 @@ const chapterData = [
     ],
   },
   {
+    caption: "水面轻轻荡开一圈又一圈薄雾，暮色在天边缓缓沉落，未尽的话语与更远的回声一起，沿着看不见的岸线继续向前延展",
     panels: [
       {
         image:
@@ -85,6 +87,7 @@ let isAnimating = false;
 let activeDrag = null;
 let dissolvingOptions = [];
 let revealTimeouts = [];
+let typewriterTimeouts = [];
 const selectedOptions = new Map();
 
 function wait(ms) {
@@ -177,6 +180,13 @@ function clearRevealTimers() {
   revealTimeouts = [];
 }
 
+function clearTypewriterTimers() {
+  typewriterTimeouts.forEach((timeoutId) => {
+    window.clearTimeout(timeoutId);
+  });
+  typewriterTimeouts = [];
+}
+
 function handlePointerDown(event) {
   const optionCard = event.target.closest(".is-option");
   if (!optionCard || isAnimating) {
@@ -212,6 +222,7 @@ function handlePointerDown(event) {
     pointerId: event.pointerId,
     source: optionCard,
     visual: dragVisual,
+    sourceRect: rect,
     offsetX: event.clientX - rect.left,
     offsetY: event.clientY - rect.top,
   };
@@ -219,9 +230,10 @@ function handlePointerDown(event) {
   updateDragPosition(event.clientX, event.clientY);
   updateDropTarget(event.clientX, event.clientY);
 
-  optionCard.addEventListener("pointermove", handlePointerMove);
-  optionCard.addEventListener("pointerup", handlePointerUp);
-  optionCard.addEventListener("pointercancel", handlePointerUp);
+  window.addEventListener("pointermove", handlePointerMove, true);
+  window.addEventListener("pointerup", handlePointerUp, true);
+  window.addEventListener("pointercancel", handlePointerCancel, true);
+  window.addEventListener("blur", handleWindowBlur, true);
 }
 
 function handlePointerMove(event) {
@@ -276,11 +288,31 @@ function handlePointerUp(event) {
   clearDropTargets();
 
   const dropSlot = getActiveDropSlot(event.clientX, event.clientY);
-  cleanupActiveDrag();
-
   if (dropSlot) {
+    cleanupActiveDrag();
     fillSlot(dropSlot, source);
+    return;
   }
+
+  animateDragBack();
+}
+
+function handlePointerCancel(event) {
+  if (!activeDrag || event.pointerId !== activeDrag.pointerId) {
+    return;
+  }
+
+  clearDropTargets();
+  animateDragBack();
+}
+
+function handleWindowBlur() {
+  if (!activeDrag) {
+    return;
+  }
+
+  clearDropTargets();
+  animateDragBack();
 }
 
 function updateDragPosition(clientX, clientY) {
@@ -324,14 +356,31 @@ function cleanupActiveDrag() {
   const { source, visual, pointerId } = activeDrag;
   source.classList.remove("is-dragging");
   source.classList.remove("is-hover-left", "is-hover-right", "is-hover-center");
-  source.removeEventListener("pointermove", handlePointerMove);
-  source.removeEventListener("pointerup", handlePointerUp);
-  source.removeEventListener("pointercancel", handlePointerUp);
   if (source.hasPointerCapture(pointerId)) {
     source.releasePointerCapture(pointerId);
   }
+  window.removeEventListener("pointermove", handlePointerMove, true);
+  window.removeEventListener("pointerup", handlePointerUp, true);
+  window.removeEventListener("pointercancel", handlePointerCancel, true);
+  window.removeEventListener("blur", handleWindowBlur, true);
   visual.remove();
   activeDrag = null;
+}
+
+function animateDragBack() {
+  if (!activeDrag) {
+    return;
+  }
+
+  const { visual, sourceRect } = activeDrag;
+  visual.style.transition = "left 180ms ease, top 180ms ease, transform 180ms ease";
+  visual.style.left = `${sourceRect.left}px`;
+  visual.style.top = `${sourceRect.top}px`;
+  visual.style.transform = "scale(1)";
+
+  window.setTimeout(() => {
+    cleanupActiveDrag();
+  }, 190);
 }
 
 function fillSlot(slot, optionCard) {
@@ -350,6 +399,7 @@ function fillSlot(slot, optionCard) {
 
 async function runChapterTransition(chapterNode) {
   clearRevealTimers();
+  clearTypewriterTimers();
 
   await wait(520);
 
@@ -359,11 +409,32 @@ async function runChapterTransition(chapterNode) {
   await wait(dissolveDuration);
 
   chapterNode.querySelector(".option-strip").classList.remove("is-visible");
+  await playChapterCaption(chapterNode, chapterData[currentChapterIndex].caption);
 
-  await wait(1200);
+  await wait(320);
 
   dissolvingOptions = [];
   goToNextChapter();
+}
+
+function playChapterCaption(chapterNode, text) {
+  return new Promise((resolve) => {
+    const captionNode = chapterNode.querySelector(".chapter-caption");
+    captionNode.textContent = "";
+    captionNode.classList.add("is-visible");
+
+    const chars = [...`${text}......`];
+    chars.forEach((char, index) => {
+    const timeoutId = window.setTimeout(() => {
+        captionNode.textContent += char;
+        if (index === chars.length - 1) {
+          const resolveTimeoutId = window.setTimeout(resolve, 420);
+          typewriterTimeouts.push(resolveTimeoutId);
+        }
+      }, index * 85);
+      typewriterTimeouts.push(timeoutId);
+    });
+  });
 }
 
 function burstRemainingOptions(chapterNode) {
@@ -456,9 +527,12 @@ async function goToNextChapter() {
 function clearFrozenOptionState(chapterNode) {
   const optionStrip = chapterNode.querySelector(".option-strip");
   const optionsContainer = chapterNode.querySelector(".options");
+  const captionNode = chapterNode.querySelector(".chapter-caption");
 
   optionStrip.classList.remove("is-visible");
   optionStrip.style.display = "none";
+  captionNode.classList.remove("is-visible");
+  captionNode.textContent = "";
   optionsContainer.classList.remove("is-frozen");
   optionsContainer.style.width = "";
   optionsContainer.style.height = "";
@@ -474,6 +548,7 @@ function clearFrozenOptionState(chapterNode) {
 
 async function showAllChaptersOverview(currentChapterNode) {
   clearRevealTimers();
+  clearTypewriterTimers();
   clearFrozenOptionState(currentChapterNode);
   overviewGrid.replaceChildren();
 
@@ -481,6 +556,7 @@ async function showAllChaptersOverview(currentChapterNode) {
     const chapterCard = overviewChapterTemplate.content.firstElementChild.cloneNode(true);
     const grid = chapterCard.querySelector(".chapter-grid");
     chapterCard.querySelector(".overview-label").textContent = `第 ${chapterIndex + 1} 章`;
+    chapterCard.querySelector(".overview-caption").textContent = chapter.caption;
 
     chapter.panels.forEach((panel) => {
       const panelNode = createPanel(panel);
