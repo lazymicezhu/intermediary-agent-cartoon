@@ -465,6 +465,7 @@ input {
   line-height: 1.38;
   text-align: center;
   word-break: break-word;
+  overflow: hidden;
   transform: translate3d(0, 0, 0);
   will-change: transform;
   pointer-events: auto;
@@ -524,6 +525,7 @@ input {
   border-radius: 18px;
   padding: 18px 20px;
   z-index: 2;
+  overflow: visible;
 }
 
 .comment-bubble__author {
@@ -544,6 +546,7 @@ input {
 .comment-bubble__text {
   display: -webkit-box;
   max-width: 100%;
+  min-height: 0;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
@@ -568,28 +571,11 @@ input {
 }
 
 .comment-page-bubble {
-  position: absolute;
   left: 50%;
   top: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: 112px;
-  height: 112px;
-  padding: 16px;
-  border: 2px solid rgba(20, 20, 20, 0.72);
-  border-radius: 999px;
-  background: var(--bubble-bg);
-  box-shadow: 0 18px 34px rgba(20, 20, 20, 0.16);
-  color: rgba(20, 20, 20, 0.86);
-  font-size: 0.92rem;
-  line-height: 1.38;
-  text-align: center;
-  word-break: break-word;
-  overflow: hidden;
   opacity: 0;
+  cursor: default;
+  pointer-events: none;
   transform: translate(-50%, -50%) scale(0.82);
   animation: comment-send-bubble 5200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }

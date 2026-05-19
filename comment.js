@@ -67,8 +67,10 @@ function readLocalComments() {
 
 function showSentBubble(text, color) {
   const bubble = document.createElement("div");
-  bubble.className = "comment-page-bubble";
+  const size = clamp(86 + text.length * 2.8, 98, 172);
+  bubble.className = "comment-bubble comment-page-bubble";
   bubble.dataset.color = color;
+  bubble.style.setProperty("--bubble-size", `${size}px`);
   bubble.innerHTML = `
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
@@ -79,6 +81,10 @@ function showSentBubble(text, color) {
   window.setTimeout(() => {
     bubble.remove();
   }, 5400);
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 textInput.addEventListener("input", updateCount);
