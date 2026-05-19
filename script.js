@@ -3,39 +3,39 @@ const chapterData = [
     caption: "中介把小心思藏进合同字缝里：原本承诺“不成功全额退款”，却多塞进一个极小的“不”，让保障悄悄变成“不成功不全额退款”。",
     panels: [
       {
-        image: "./assets/1A.png",
+        image: "./assets/optimized/1A.jpg",
         aspect: "1186 / 868",
       },
       {
-        image: "./assets/1B.png",
+        image: "./assets/optimized/1B.jpg",
         aspect: "1194 / 872",
       },
       {
-        image: "./assets/1C.png",
+        image: "./assets/optimized/1C.jpg",
         aspect: "1182 / 860",
       },
     ],
     options: [
       {
-        image: "./assets/1D-1.png",
+        image: "./assets/optimized/1D-1.jpg",
         aspect: "580 / 424",
         ending:
           "他只看见“名校捷报”的光鲜话术，爽快落笔签约。等申请失败时，才发现合同角落那枚小小的“不”，已经把“全额退款”偷换成“不全额退款”。",
       },
       {
-        image: "./assets/1D-2.png",
+        image: "./assets/optimized/1D-2.jpg",
         aspect: "580 / 426",
         ending:
           "他停下来逐字检查合同，放大镜扫到那枚不起眼的“不”。中介的文字游戏当场露馅，所谓退款承诺也终于露出真正的边界。",
       },
       {
-        image: "./assets/1D-3.png",
+        image: "./assets/optimized/1D-3.jpg",
         aspect: "578 / 414",
         ending:
           "他把合同拿回去问身边同学，前辈一眼指出那句“不会全额退款”的陷阱。多问一句，正好挡住了中介藏在小字里的算盘。",
       },
       {
-        image: "./assets/1D-4.png",
+        image: "./assets/optimized/1D-4.jpg",
         aspect: "574 / 410",
         ending:
           "他没有被催促带走节奏，直接拒绝当场签约。只要不让那枚小小的“不”落进自己的合同，退款承诺就不会被悄悄改写。",
