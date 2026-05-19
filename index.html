@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>失信漫画平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=bubble-fixes" />
+    <link rel="stylesheet" href="./styles.css?v=cover-page" />
     <link rel="preload" as="image" href="./assets/optimized/1A.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1B.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1C.jpg" />
@@ -14,6 +14,17 @@
     <link rel="preload" as="image" href="./assets/optimized/1D-4.jpg" />
   </head>
   <body>
+    <section class="cover-page" id="cover-page" aria-label="留学中介畅所欲言区">
+      <div class="cover-page__inner">
+        <p class="cover-page__eyebrow">关于留学中介</p>
+        <h1>畅所欲言区</h1>
+        <p class="cover-page__copy">把合同小字、亲历套路和疑问都留在这里。</p>
+        <button class="cover-page__enter" id="cover-enter" type="button">
+          点击进入互动漫画区
+        </button>
+      </div>
+    </section>
+
     <main class="app-shell">
       <section class="story-stage">
         <div class="chapter-track" id="chapter-track" aria-live="polite"></div>
@@ -59,6 +70,6 @@
       </article>
     </template>
 
-    <script type="module" src="./script.js?v=bubble-fixes"></script>
+    <script type="module" src="./script.js?v=cover-page"></script>
   </body>
 </html>

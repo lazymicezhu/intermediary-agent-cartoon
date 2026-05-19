@@ -93,6 +93,8 @@ const commentBubbleLayer = document.querySelector("#comment-bubble-layer");
 const commentQr = document.querySelector("#comment-qr");
 const commentQrLink = document.querySelector("#comment-qr-link");
 const commentQrImage = document.querySelector("#comment-qr-image");
+const coverPage = document.querySelector("#cover-page");
+const coverEnter = document.querySelector("#cover-enter");
 
 let currentChapterIndex = 0;
 let isAnimating = false;
@@ -116,6 +118,8 @@ let commentPollingStarted = false;
 let qrDrag = null;
 let draggedBubble = null;
 let lastBubbleFrame = 0;
+let storyStarted = false;
+const preloadedAssets = new Set();
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -1152,9 +1156,60 @@ function render() {
     track.append(chapterNode);
   });
 
-  revealPanels(track.children[0]);
+  setupCoverPage();
+}
+
+function setupCoverPage() {
+  preloadStoryAssets();
   setupCommentQr();
   setupCommentBubbles();
+  coverEnter?.addEventListener("click", startStory);
+  coverPage?.addEventListener("click", (event) => {
+    if (event.target === coverPage) {
+      startStory();
+    }
+  });
+}
+
+function preloadStoryAssets() {
+  const assetUrls = [
+    ...chapterData.flatMap((chapter) => [
+      ...chapter.panels.map((panel) => panel.image),
+      ...chapter.options.map((option) => option.image),
+    ]),
+    getCommentPageUrl(),
+  ];
+
+  assetUrls.forEach((url) => {
+    if (!url || url.startsWith("linear-gradient") || preloadedAssets.has(url)) {
+      return;
+    }
+
+    preloadedAssets.add(url);
+    if (isImageUrl(url)) {
+      const image = new Image();
+      image.decoding = "async";
+      image.loading = "eager";
+      image.src = url;
+      return;
+    }
+
+    fetch(url, { cache: "force-cache" }).catch(() => {});
+  });
+}
+
+function isImageUrl(url) {
+  return /\.(avif|gif|jpe?g|png|svg|webp)(\?|#|$)/i.test(url) || url.includes("picsum.photos");
+}
+
+function startStory() {
+  if (storyStarted) {
+    return;
+  }
+
+  storyStarted = true;
+  coverPage?.classList.add("is-hidden");
+  revealPanels(track.children[0]);
 }
 
 render();

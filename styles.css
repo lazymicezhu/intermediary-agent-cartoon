@@ -28,6 +28,90 @@ input {
   font: inherit;
 }
 
+.cover-page {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: #f5f1e8;
+  color: var(--ink);
+  transition:
+    opacity 680ms ease,
+    transform 680ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 680ms ease;
+}
+
+.cover-page.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-18px) scale(1.015);
+  pointer-events: none;
+}
+
+.cover-page__inner {
+  width: min(760px, 100%);
+  min-height: min(620px, calc(100vh - 56px));
+  display: grid;
+  grid-template-rows: 1fr auto auto auto 1.25fr auto;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.cover-page__eyebrow {
+  grid-row: 2;
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.cover-page h1 {
+  grid-row: 3;
+  margin: 10px 0 0;
+  font-family: "STKaiti", "KaiTi", "Songti SC", serif;
+  font-size: clamp(3.2rem, 10vw, 7.4rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+.cover-page__copy {
+  grid-row: 4;
+  width: min(680px, 96%);
+  margin: 22px 0 0;
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  line-height: 1.9;
+  color: rgba(20, 20, 20, 0.74);
+  white-space: nowrap;
+}
+
+.cover-page__enter {
+  grid-row: 6;
+  border: 0;
+  background: transparent;
+  color: rgba(20, 20, 20, 0.82);
+  font-size: clamp(1rem, 2.8vw, 1.28rem);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  animation: cover-enter-blink 1500ms ease-in-out infinite;
+}
+
+@keyframes cover-enter-blink {
+  0%,
+  100% {
+    opacity: 0.34;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
 .app-shell {
   width: min(1180px, calc(100vw - 64px));
   margin: 0 auto;
@@ -357,7 +441,7 @@ input {
 .comment-bubble-layer {
   position: fixed;
   inset: 0;
-  z-index: 30;
+  z-index: 42;
   overflow: hidden;
   pointer-events: none;
 }
