@@ -73,7 +73,7 @@ function showSentBubble(text, color) {
   bubbleLayer.append(bubble);
   window.setTimeout(() => {
     bubble.remove();
-  }, 2300);
+  }, 5400);
 }
 
 textInput.addEventListener("input", updateCount);
