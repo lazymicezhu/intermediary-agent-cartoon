@@ -69,7 +69,12 @@ function showSentBubble(text, color) {
   const bubble = document.createElement("div");
   bubble.className = "comment-page-bubble";
   bubble.dataset.color = color;
-  bubble.textContent = text;
+  bubble.innerHTML = `
+    <span class="comment-bubble__text"></span>
+    <span class="comment-bubble__time"></span>
+  `;
+  bubble.querySelector(".comment-bubble__text").textContent = text;
+  bubble.querySelector(".comment-bubble__time").textContent = "刚刚";
   bubbleLayer.append(bubble);
   window.setTimeout(() => {
     bubble.remove();

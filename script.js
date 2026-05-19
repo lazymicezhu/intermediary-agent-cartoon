@@ -744,16 +744,20 @@ function spawnCommentBubble(comment) {
   }
 
   const node = document.createElement("div");
+  const nickname = String(comment.nickname || "").trim();
   const createdAt = Number(comment.created_at) || Date.now();
   const color = normalizeBubbleColor(comment.color);
   const size = clamp(86 + text.length * 2.8, 98, 172);
   node.className = "comment-bubble";
   node.dataset.color = color;
+  node.classList.toggle("has-author", Boolean(nickname));
   node.style.setProperty("--bubble-size", `${size}px`);
   node.innerHTML = `
+    <span class="comment-bubble__author"></span>
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
   `;
+  node.querySelector(".comment-bubble__author").textContent = nickname;
   node.querySelector(".comment-bubble__text").textContent = text;
   node.querySelector(".comment-bubble__time").textContent = formatCommentTime(createdAt);
   node.addEventListener("pointerdown", (event) => {
