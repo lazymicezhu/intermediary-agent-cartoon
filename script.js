@@ -1009,12 +1009,15 @@ function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
   const diameter = Math.max((bubble?.radius || 54) * 2, 1);
   const charsPerLine = Math.max(3, Math.floor((diameter - 42) / 16));
+  const lineCapacity = diameter >= 138 ? 4 : diameter >= 112 ? 3 : diameter >= 92 ? 2 : 1;
+  const desiredLines = Math.ceil(normalized.length / charsPerLine);
+  const lineCount = clamp(desiredLines, 1, lineCapacity);
   const reservedForBadge = bubble?.replyCount > 0 ? 2 : 0;
-  const maxLength = clamp(charsPerLine * 2 - reservedForBadge, 6, 14);
+  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 4, 28);
   if (normalized.length <= maxLength) {
     return normalized;
   }
-  return `${normalized.slice(0, Math.max(4, maxLength - 1))}...`;
+  return `${normalized.slice(0, Math.max(2, maxLength - 1))}...`;
 }
 
 function renderBubbleReplies(bubble) {
