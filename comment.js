@@ -4,6 +4,7 @@ const nicknameInput = document.querySelector("#comment-nickname");
 const countNode = document.querySelector("#comment-count");
 const statusNode = document.querySelector("#comment-status");
 const submitButton = document.querySelector("#comment-submit");
+const bubbleLayer = document.querySelector("#comment-page-bubble-layer");
 const localCommentKey = "cartoon-comments";
 
 function updateCount() {
@@ -64,6 +65,17 @@ function readLocalComments() {
   }
 }
 
+function showSentBubble(text, color) {
+  const bubble = document.createElement("div");
+  bubble.className = "comment-page-bubble";
+  bubble.dataset.color = color;
+  bubble.textContent = text;
+  bubbleLayer.append(bubble);
+  window.setTimeout(() => {
+    bubble.remove();
+  }, 2300);
+}
+
 textInput.addEventListener("input", updateCount);
 
 form.addEventListener("submit", async (event) => {
@@ -81,6 +93,7 @@ form.addEventListener("submit", async (event) => {
 
   try {
     await submitComment({ text, nickname, color });
+    showSentBubble(text, color);
     textInput.value = "";
     nicknameInput.value = "";
     updateCount();

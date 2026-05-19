@@ -740,19 +740,16 @@ function spawnCommentBubble(comment) {
   }
 
   const node = document.createElement("div");
-  const nickname = String(comment.nickname || "").trim();
   const createdAt = Number(comment.created_at) || Date.now();
   const color = normalizeBubbleColor(comment.color);
-  const size = clamp(86 + text.length * 2.8 + nickname.length * 1.6, 98, 172);
+  const size = clamp(86 + text.length * 2.8, 98, 172);
   node.className = "comment-bubble";
   node.dataset.color = color;
   node.style.setProperty("--bubble-size", `${size}px`);
   node.innerHTML = `
-    <span class="comment-bubble__author"></span>
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
   `;
-  node.querySelector(".comment-bubble__author").textContent = nickname || "匿名";
   node.querySelector(".comment-bubble__text").textContent = text;
   node.querySelector(".comment-bubble__time").textContent = formatCommentTime(createdAt);
   node.addEventListener("pointerdown", (event) => {
@@ -760,14 +757,13 @@ function spawnCommentBubble(comment) {
   });
   commentBubbleLayer.append(node);
 
-  const x = clamp(window.innerWidth * (0.25 + Math.random() * 0.5), size, window.innerWidth - size);
-  const y = window.innerHeight + size * 0.5;
+  const spawnPoint = getBubbleSpawnPoint(size);
   commentBubbles.push({
     id: comment.id,
     node,
     radius: size / 2,
-    x,
-    y,
+    x: spawnPoint.x,
+    y: spawnPoint.y,
     vx: (Math.random() - 0.5) * 1.4,
     vy: -2.2 - Math.random() * 1.1,
     bornAt: performance.now(),
@@ -781,6 +777,22 @@ function spawnCommentBubble(comment) {
     const oldBubble = commentBubbles.shift();
     oldBubble.node.remove();
   }
+}
+
+function getBubbleSpawnPoint(size) {
+  const radius = size / 2;
+  const leftZone = {
+    min: radius + 18,
+    max: Math.max(radius + 18, window.innerWidth * 0.18),
+  };
+  const rightZone = {
+    min: Math.min(window.innerWidth - radius - 18, window.innerWidth * 0.82),
+    max: window.innerWidth - radius - 18,
+  };
+  const zone = Math.random() < 0.5 ? leftZone : rightZone;
+  const x = clamp(zone.min + Math.random() * (zone.max - zone.min), radius, window.innerWidth - radius);
+  const y = clamp(window.innerHeight * (0.58 + Math.random() * 0.2), radius + bubbleSafeTop, window.innerHeight - radius - 18);
+  return { x, y };
 }
 
 function startBubbleDrag(event, bubbleNode) {
@@ -837,6 +849,7 @@ function handleDraggedBubbleEnd(event) {
 
   if (!draggedBubble.movedDuringDrag) {
     draggedBubble.node.classList.toggle("is-expanded");
+    keepBubbleInsideViewport(draggedBubble);
   }
 
   draggedBubble = null;
@@ -888,6 +901,16 @@ function tickBubbles(timestamp) {
   });
 
   window.requestAnimationFrame(tickBubbles);
+}
+
+function keepBubbleInsideViewport(bubble) {
+  const rect = bubble.node.getBoundingClientRect();
+  const halfWidth = rect.width / 2;
+  const halfHeight = rect.height / 2;
+  bubble.x = clamp(bubble.x, halfWidth + 8, window.innerWidth - halfWidth - 8);
+  bubble.y = clamp(bubble.y, halfHeight + bubbleSafeTop, window.innerHeight - halfHeight - 8);
+  bubble.vx = 0;
+  bubble.vy = 0;
 }
 
 function applyPointerForce(bubble, timestamp) {
