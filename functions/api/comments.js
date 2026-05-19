@@ -30,6 +30,10 @@ async function handleGet({ request, env }) {
   const url = new URL(request.url);
   const after = Math.max(0, Number(url.searchParams.get("after") || 0));
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 40), 1), 80);
+  const screenId = normalizeScreenId(url.searchParams.get("screenId"));
+  if (screenId) {
+    await recordActiveScreen(db, screenId);
+  }
   const comments = await readComments(db, after, limit);
 
   return json({ comments });
@@ -111,6 +115,24 @@ async function writeComment(db, comment) {
 function normalizeColor(color) {
   const allowedColors = new Set(["blue", "yellow", "green", "pink", "violet"]);
   return allowedColors.has(color) ? color : "blue";
+}
+
+async function recordActiveScreen(db, screenId) {
+  try {
+    await db
+      .prepare(
+        "INSERT INTO active_screens (screen_id, last_seen) VALUES (?, ?) ON CONFLICT(screen_id) DO UPDATE SET last_seen = excluded.last_seen",
+      )
+      .bind(screenId, Date.now())
+      .run();
+  } catch {
+    // The stats migration may not have run yet; comments should keep working.
+  }
+}
+
+function normalizeScreenId(screenId) {
+  const id = String(screenId || "").trim();
+  return /^[a-zA-Z0-9_-]{8,80}$/.test(id) ? id : "";
 }
 
 function getDatabase(env) {

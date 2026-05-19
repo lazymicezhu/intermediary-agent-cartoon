@@ -803,6 +803,100 @@ input {
   line-height: 1.6;
 }
 
+.stats-page {
+  min-height: 100vh;
+  background: #f5f1e8;
+}
+
+.stats-shell {
+  width: min(960px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid rgba(20, 20, 20, 0.82);
+}
+
+.stats-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: 0;
+}
+
+.stats-refresh {
+  height: 38px;
+  min-width: 84px;
+  border: 0;
+  background: #141414;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0;
+}
+
+.stats-summary article {
+  border: 2px solid rgba(20, 20, 20, 0.82);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 16px;
+}
+
+.stats-summary span {
+  display: block;
+  color: rgba(20, 20, 20, 0.62);
+  font-weight: 700;
+}
+
+.stats-summary strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.stats-list {
+  display: grid;
+  gap: 10px;
+}
+
+.stats-comment {
+  border: 1px solid rgba(20, 20, 20, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 12px 14px;
+}
+
+.stats-comment__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: rgba(20, 20, 20, 0.58);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.stats-comment p {
+  margin: 8px 0 0;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.stats-status {
+  min-height: 1.6em;
+  margin: 16px 0 0;
+  color: rgba(20, 20, 20, 0.62);
+}
+
 @media (max-width: 920px) {
   :root {
     --main-panel-size: min(44vw, 300px);

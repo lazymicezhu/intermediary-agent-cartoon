@@ -105,6 +105,7 @@ let typewriterTimeouts = [];
 const selectedOptions = new Map();
 const commentApiPath = "/api/comments";
 const localCommentKey = "cartoon-comments";
+const screenIdKey = "cartoon-screen-id";
 const bubbleSafeTop = 24;
 const seenCommentIds = new Set();
 const commentBubbles = [];
@@ -120,6 +121,8 @@ let draggedBubble = null;
 let lastBubbleFrame = 0;
 let storyStarted = false;
 const preloadedAssets = new Set();
+const screenId = getScreenId();
+let lastScreenHeartbeatAt = 0;
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -716,7 +719,14 @@ async function pollComments() {
 
 async function fetchRemoteComments() {
   try {
-    const response = await fetch(`${commentApiPath}?after=${lastCommentId}`, {
+    const params = new URLSearchParams({
+      after: String(lastCommentId),
+    });
+    if (shouldSendScreenHeartbeat()) {
+      params.set("screenId", screenId);
+      lastScreenHeartbeatAt = Date.now();
+    }
+    const response = await fetch(`${commentApiPath}?${params.toString()}`, {
       headers: { Accept: "application/json" },
       cache: "no-store",
     });
@@ -1060,6 +1070,21 @@ function writeJson(key, value) {
   } catch {
     // Storage can be disabled in embedded preview browsers.
   }
+}
+
+function getScreenId() {
+  const existingId = readJson(screenIdKey, "");
+  if (existingId) {
+    return existingId;
+  }
+
+  const id = window.crypto?.randomUUID?.() ?? `screen-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  writeJson(screenIdKey, id);
+  return id;
+}
+
+function shouldSendScreenHeartbeat() {
+  return Date.now() - lastScreenHeartbeatAt > 10_000;
 }
 
 function clamp(value, min, max) {

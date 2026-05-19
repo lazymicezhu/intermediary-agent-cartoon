@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>评论统计</title>
+    <link rel="stylesheet" href="./styles.css?v=stats-page" />
+  </head>
+  <body class="stats-page">
+    <main class="stats-shell">
+      <header class="stats-header">
+        <h1>评论统计</h1>
+        <button class="stats-refresh" id="stats-refresh" type="button">刷新</button>
+      </header>
+      <section class="stats-summary">
+        <article>
+          <span>当前主屏</span>
+          <strong id="active-screens">-</strong>
+        </article>
+        <article>
+          <span>评论总数</span>
+          <strong id="comment-total">-</strong>
+        </article>
+      </section>
+      <section class="stats-list" id="stats-list" aria-live="polite"></section>
+      <p class="stats-status" id="stats-status"></p>
+    </main>
+
+    <script type="module" src="./stats.js?v=stats-page"></script>
+  </body>
+</html>
