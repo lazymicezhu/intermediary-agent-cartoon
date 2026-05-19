@@ -926,7 +926,6 @@ function spawnCommentBubble(comment) {
     </form>
   `;
   node.querySelector(".comment-bubble__author").textContent = nickname;
-  node.querySelector(".comment-bubble__text").textContent = text;
   node.querySelector(".comment-bubble__time").textContent = formatCommentTime(createdAt);
   node.addEventListener("pointerdown", (event) => {
     if (!event.target.closest(".comment-bubble__reply-form")) {
@@ -951,11 +950,13 @@ function spawnCommentBubble(comment) {
     dragStartX: 0,
     dragStartY: 0,
     movedDuringDrag: false,
+    text,
     replies,
     replyCount: Math.max(Number(comment.reply_count) || 0, replies.length),
   };
 
   applyBubbleSize(bubble, baseSize);
+  updateBubbleText(bubble);
   renderBubbleReplies(bubble);
   node.querySelector(".comment-bubble__reply-form").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -990,6 +991,23 @@ function applyBubbleSize(bubble, baseSize) {
 
 function getScaledBubbleSize(baseSize) {
   return Math.round(baseSize * (bubbleSizeScales[commentBubbleSizeIndex] || 1));
+}
+
+function updateBubbleText(bubble) {
+  const textNode = bubble.node.querySelector(".comment-bubble__text");
+  if (!textNode) {
+    return;
+  }
+  const isExpanded = bubble.node.classList.contains("is-expanded");
+  textNode.textContent = isExpanded ? bubble.text : createBubblePreviewText(bubble.text);
+}
+
+function createBubblePreviewText(text) {
+  const normalized = String(text || "").trim();
+  if (normalized.length <= 26) {
+    return normalized;
+  }
+  return `${normalized.slice(0, 24)}...`;
 }
 
 function renderBubbleReplies(bubble) {
@@ -1146,6 +1164,7 @@ function handleDraggedBubbleEnd(event) {
 
   if (!draggedBubble.movedDuringDrag) {
     draggedBubble.node.classList.toggle("is-expanded");
+    updateBubbleText(draggedBubble);
     keepBubbleInsideViewport(draggedBubble);
   }
 

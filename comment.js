@@ -117,7 +117,7 @@ function showSentBubble(text, color) {
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
   `;
-  bubble.querySelector(".comment-bubble__text").textContent = text;
+  bubble.querySelector(".comment-bubble__text").textContent = createBubblePreviewText(text);
   bubble.querySelector(".comment-bubble__time").textContent = "刚刚";
   bubbleLayer.append(bubble);
   window.setTimeout(() => {
@@ -184,11 +184,11 @@ function spawnMobileBubble(comment) {
       <button class="comment-mobile-bubble__reply-submit" type="submit">发送</button>
     </form>
   `;
-  bubble.querySelector(".comment-bubble__text").textContent = text;
   bubble.querySelector(".comment-bubble__time").textContent = formatCommentTime(comment.created_at);
   const item = {
     node: bubble,
     comment,
+    text,
     baseRadius: radius,
     radius,
     replyCount,
@@ -198,6 +198,7 @@ function spawnMobileBubble(comment) {
     vy: -1.8 - Math.random() * 0.7,
     isExpanded: false,
   };
+  updateMobileBubbleText(item);
   updateMobileBubbleReplyCount(item);
   bubble.addEventListener("click", (event) => {
     if (event.target.closest(".comment-mobile-bubble__reply-form")) {
@@ -337,6 +338,7 @@ function expandMobileBubble(bubble) {
   bubble.vy = 0;
   bubble.node.classList.add("is-expanded");
   bubble.node.setAttribute("role", "group");
+  updateMobileBubbleText(bubble);
   const rect = mobileBubblesStage.getBoundingClientRect();
   bubble.x = rect.width / 2;
   bubble.y = clamp(bubble.y, 116, rect.height - 116);
@@ -352,6 +354,7 @@ function collapseMobileBubble(bubble) {
   bubble.node.classList.remove("is-expanded");
   bubble.node.setAttribute("role", "button");
   bubble.node.querySelector(".comment-mobile-bubble__reply-input").value = "";
+  updateMobileBubbleText(bubble);
   expandedMobileBubble = expandedMobileBubble === bubble ? null : expandedMobileBubble;
 }
 
@@ -383,6 +386,22 @@ function updateMobileBubbleReplyCount(bubble) {
   const countNode = bubble.node.querySelector(".comment-bubble__reply-count");
   countNode.textContent = String(bubble.replyCount);
   bubble.node.classList.toggle("has-replies", bubble.replyCount > 0);
+}
+
+function updateMobileBubbleText(bubble) {
+  const textNode = bubble.node.querySelector(".comment-bubble__text");
+  if (!textNode) {
+    return;
+  }
+  textNode.textContent = bubble.isExpanded ? bubble.text : createBubblePreviewText(bubble.text);
+}
+
+function createBubblePreviewText(text) {
+  const normalized = String(text || "").trim();
+  if (normalized.length <= 22) {
+    return normalized;
+  }
+  return `${normalized.slice(0, 20)}...`;
 }
 
 function normalizeColor(color) {
