@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>失信漫画平台原型</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=comments" />
   </head>
   <body>
     <main class="app-shell">
@@ -15,6 +15,17 @@
         <div class="overview-grid" id="overview-grid"></div>
       </section>
     </main>
+
+    <div class="comment-bubble-layer" id="comment-bubble-layer" aria-live="polite"></div>
+
+    <aside class="comment-qr" id="comment-qr" aria-label="扫码评论">
+      <button class="comment-qr__handle" type="button" aria-label="拖动评论二维码">
+        评论
+      </button>
+      <a class="comment-qr__link" id="comment-qr-link" href="./comment.html" target="_blank" rel="noopener">
+        <img class="comment-qr__image" id="comment-qr-image" alt="扫码打开评论页面" />
+      </a>
+    </aside>
 
     <template id="chapter-template">
       <article class="chapter">
@@ -41,6 +52,6 @@
       </article>
     </template>
 
-    <script type="module" src="./script.js"></script>
+    <script type="module" src="./script.js?v=comments"></script>
   </body>
 </html>

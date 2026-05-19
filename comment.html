@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>发送评论</title>
+    <link rel="stylesheet" href="./styles.css?v=comments" />
+  </head>
+  <body class="comment-page">
+    <form class="comment-form" id="comment-form">
+      <h1>发送一条评论</h1>
+      <p>提交后，评论会在漫画主页面变成一个漂浮气泡。</p>
+      <textarea
+        id="comment-text"
+        name="text"
+        maxlength="80"
+        placeholder="写下你的想法"
+        required
+      ></textarea>
+      <div class="comment-form__meta">
+        <span class="comment-form__count" id="comment-count">0 / 80</span>
+        <button type="submit" id="comment-submit">发送</button>
+      </div>
+      <div class="comment-form__status" id="comment-status" role="status"></div>
+    </form>
+
+    <script type="module" src="./comment.js?v=comments"></script>
+  </body>
+</html>

@@ -22,6 +22,12 @@ body {
   background: var(--bg);
 }
 
+button,
+textarea,
+input {
+  font: inherit;
+}
+
 .app-shell {
   width: min(1180px, calc(100vw - 64px));
   margin: 0 auto;
@@ -346,6 +352,155 @@ body {
   color: rgba(20, 20, 20, 0.26);
 }
 
+.comment-bubble-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.comment-bubble {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--bubble-size, 108px);
+  height: var(--bubble-size, 108px);
+  padding: 16px;
+  border: 2px solid rgba(20, 20, 20, 0.72);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(179, 214, 255, 0.86) 48%, rgba(255, 229, 130, 0.78));
+  box-shadow: 0 16px 30px rgba(20, 20, 20, 0.14);
+  color: rgba(20, 20, 20, 0.86);
+  font-size: clamp(0.78rem, 1.8vw, 0.98rem);
+  line-height: 1.38;
+  text-align: center;
+  word-break: break-word;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.comment-qr {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 45;
+  display: grid;
+  gap: 8px;
+  width: 132px;
+  padding: 10px;
+  border: 2px solid rgba(20, 20, 20, 0.78);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 38px rgba(20, 20, 20, 0.16);
+  touch-action: none;
+  user-select: none;
+}
+
+.comment-qr__handle {
+  height: 28px;
+  border: 0;
+  background: #141414;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: grab;
+}
+
+.comment-qr__handle:active {
+  cursor: grabbing;
+}
+
+.comment-qr__link {
+  display: block;
+  border: 1px solid rgba(20, 20, 20, 0.14);
+  background: #ffffff;
+}
+
+.comment-qr__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.comment-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(155, 184, 255, 0.2)),
+    var(--bg);
+}
+
+.comment-form {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 3px solid var(--panel-line);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 20px 44px rgba(20, 20, 20, 0.13);
+}
+
+.comment-form h1 {
+  margin: 0;
+  font-size: 1.42rem;
+  letter-spacing: 0;
+}
+
+.comment-form p {
+  margin: 0;
+  color: rgba(20, 20, 20, 0.68);
+  line-height: 1.7;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 132px;
+  resize: vertical;
+  border: 2px solid rgba(20, 20, 20, 0.8);
+  padding: 12px;
+  line-height: 1.6;
+  background: #fffdf7;
+  color: var(--ink);
+}
+
+.comment-form__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.comment-form__count {
+  color: rgba(20, 20, 20, 0.58);
+  font-size: 0.9rem;
+}
+
+.comment-form button {
+  min-width: 116px;
+  height: 42px;
+  border: 0;
+  background: #141414;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.comment-form button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.comment-form__status {
+  min-height: 1.6em;
+  color: rgba(20, 20, 20, 0.7);
+  line-height: 1.6;
+}
+
 @media (max-width: 920px) {
   :root {
     --main-panel-size: min(38vw, 220px);
@@ -383,5 +538,11 @@ body {
   .comic-panel.is-option {
     width: var(--option-panel-size);
     height: var(--option-panel-size);
+  }
+
+  .comment-qr {
+    width: 112px;
+    left: 14px;
+    bottom: 14px;
   }
 }

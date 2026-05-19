@@ -1,0 +1,21 @@
+# 评论功能部署说明
+
+当前实现使用 Cloudflare Pages Functions + D1。
+
+## Cloudflare 需要配置
+
+1. 创建一个 D1 数据库，例如 `cartoon_comments`。
+2. 在 Cloudflare Pages 项目的 Settings -> Functions -> D1 database bindings 中增加绑定：
+   - Variable name: `DB`
+   - D1 database: 选择刚创建的数据库
+3. 执行 `migrations/0001_create_comments.sql` 建表。
+4. 重新部署 Pages。
+
+## 页面与 API
+
+- 主页面二维码会指向 `https://cartoon.lazymicezhu.com/comment.html`。
+- 手机评论页：`/comment.html`
+- 评论提交：`POST /api/comments`
+- 主屏拉取新评论：`GET /api/comments?after=<last_id>`
+
+本地普通静态服务器没有 Cloudflare Functions，所以会自动降级到 `localStorage`，方便预览气泡效果。

@@ -81,6 +81,10 @@ const overviewChapterTemplate = document.querySelector("#overview-chapter-templa
 const storyStage = document.querySelector(".story-stage");
 const chapterOverview = document.querySelector("#chapter-overview");
 const overviewGrid = document.querySelector("#overview-grid");
+const commentBubbleLayer = document.querySelector("#comment-bubble-layer");
+const commentQr = document.querySelector("#comment-qr");
+const commentQrLink = document.querySelector("#comment-qr-link");
+const commentQrImage = document.querySelector("#comment-qr-image");
 
 let currentChapterIndex = 0;
 let isAnimating = false;
@@ -89,6 +93,19 @@ let dissolvingOptions = [];
 let revealTimeouts = [];
 let typewriterTimeouts = [];
 const selectedOptions = new Map();
+const commentApiPath = "/api/comments";
+const localCommentKey = "cartoon-comments";
+const seenCommentIds = new Set();
+const commentBubbles = [];
+const pointerState = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight / 2,
+  activeUntil: 0,
+};
+let lastCommentId = 0;
+let commentPollingStarted = false;
+let qrDrag = null;
+let lastBubbleFrame = 0;
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -505,6 +522,375 @@ function createParticles(container, rect, containerRect) {
   }
 }
 
+function getCommentPageUrl() {
+  if (window.location.hostname === "cartoon.lazymicezhu.com") {
+    return "https://cartoon.lazymicezhu.com/comment.html";
+  }
+
+  return new URL("./comment.html", window.location.href).href;
+}
+
+function setupCommentQr() {
+  if (!commentQr || !commentQrLink || !commentQrImage) {
+    return;
+  }
+
+  const commentUrl = getCommentPageUrl();
+  commentQrLink.href = commentUrl;
+  commentQrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(commentUrl)}`;
+
+  const savedPosition = readJson("comment-qr-position", null);
+  if (savedPosition) {
+    setQrPosition(savedPosition.x, savedPosition.y);
+  }
+
+  commentQr.addEventListener("pointerdown", handleQrPointerDown);
+}
+
+function handleQrPointerDown(event) {
+  const link = event.target.closest(".comment-qr__link");
+  if (link) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const rect = commentQr.getBoundingClientRect();
+  qrDrag = {
+    pointerId: event.pointerId,
+    offsetX: event.clientX - rect.left,
+    offsetY: event.clientY - rect.top,
+  };
+  commentQr.setPointerCapture(event.pointerId);
+  window.addEventListener("pointermove", handleQrPointerMove, true);
+  window.addEventListener("pointerup", handleQrPointerUp, true);
+  window.addEventListener("pointercancel", handleQrPointerUp, true);
+}
+
+function handleQrPointerMove(event) {
+  if (!qrDrag || event.pointerId !== qrDrag.pointerId) {
+    return;
+  }
+
+  setQrPosition(event.clientX - qrDrag.offsetX, event.clientY - qrDrag.offsetY);
+}
+
+function handleQrPointerUp(event) {
+  if (!qrDrag || event.pointerId !== qrDrag.pointerId) {
+    return;
+  }
+
+  if (commentQr.hasPointerCapture(qrDrag.pointerId)) {
+    commentQr.releasePointerCapture(qrDrag.pointerId);
+  }
+  window.removeEventListener("pointermove", handleQrPointerMove, true);
+  window.removeEventListener("pointerup", handleQrPointerUp, true);
+  window.removeEventListener("pointercancel", handleQrPointerUp, true);
+
+  const rect = commentQr.getBoundingClientRect();
+  writeJson("comment-qr-position", { x: rect.left, y: rect.top });
+  qrDrag = null;
+}
+
+function setQrPosition(x, y) {
+  const rect = commentQr.getBoundingClientRect();
+  const maxX = Math.max(10, window.innerWidth - rect.width - 10);
+  const maxY = Math.max(10, window.innerHeight - rect.height - 10);
+  commentQr.style.left = `${clamp(x, 10, maxX)}px`;
+  commentQr.style.top = `${clamp(y, 10, maxY)}px`;
+  commentQr.style.bottom = "auto";
+}
+
+function setupCommentBubbles() {
+  if (!commentBubbleLayer || commentPollingStarted) {
+    return;
+  }
+
+  commentPollingStarted = true;
+  window.addEventListener("pointermove", handleBubblePointerMove);
+  window.addEventListener("pointerdown", handleBubblePointerPress);
+  window.addEventListener("resize", keepQrInView);
+  window.addEventListener("cartoon-comment", (event) => {
+    spawnCommentBubble({
+      id: `preview-${Date.now()}`,
+      text: event.detail?.text || "新的评论",
+      created_at: Date.now(),
+    });
+  });
+
+  pollComments();
+  window.setInterval(pollComments, 1000);
+  window.requestAnimationFrame(tickBubbles);
+}
+
+function handleBubblePointerMove(event) {
+  pointerState.x = event.clientX;
+  pointerState.y = event.clientY;
+  pointerState.activeUntil = performance.now() + 240;
+}
+
+function handleBubblePointerPress(event) {
+  pointerState.x = event.clientX;
+  pointerState.y = event.clientY;
+  pointerState.activeUntil = performance.now() + 620;
+  commentBubbles.forEach((bubble) => {
+    const dx = bubble.x - event.clientX;
+    const dy = bubble.y - event.clientY;
+    const distance = Math.hypot(dx, dy) || 1;
+    if (distance < 260) {
+      const strength = (260 - distance) * 0.045;
+      bubble.vx += (dx / distance) * strength;
+      bubble.vy += (dy / distance) * strength - 0.8;
+    }
+  });
+}
+
+function keepQrInView() {
+  if (!commentQr) {
+    return;
+  }
+  const rect = commentQr.getBoundingClientRect();
+  setQrPosition(rect.left, rect.top);
+}
+
+async function pollComments() {
+  const comments = await fetchRemoteComments();
+  comments.forEach((comment) => {
+    const id = String(comment.id);
+    if (seenCommentIds.has(id)) {
+      return;
+    }
+    seenCommentIds.add(id);
+    lastCommentId = Math.max(lastCommentId, Number(comment.id) || lastCommentId);
+    spawnCommentBubble(comment);
+  });
+}
+
+async function fetchRemoteComments() {
+  try {
+    const response = await fetch(`${commentApiPath}?after=${lastCommentId}`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error("Comment API is unavailable");
+    }
+    const payload = await response.json();
+    return Array.isArray(payload.comments) ? payload.comments : [];
+  } catch {
+    return readLocalCommentsAfter(lastCommentId);
+  }
+}
+
+function readLocalCommentsAfter(afterId) {
+  const comments = readJson(localCommentKey, []);
+  return comments
+    .filter((comment) => Number(comment.id) > afterId)
+    .sort((a, b) => Number(a.id) - Number(b.id));
+}
+
+function spawnCommentBubble(comment) {
+  const text = String(comment.text || "").trim();
+  if (!text) {
+    return;
+  }
+
+  const node = document.createElement("div");
+  const size = clamp(78 + text.length * 3.4, 88, 156);
+  node.className = "comment-bubble";
+  node.textContent = text;
+  node.style.setProperty("--bubble-size", `${size}px`);
+  commentBubbleLayer.append(node);
+
+  const x = clamp(window.innerWidth * (0.25 + Math.random() * 0.5), size, window.innerWidth - size);
+  const y = window.innerHeight + size * 0.5;
+  commentBubbles.push({
+    id: comment.id,
+    node,
+    radius: size / 2,
+    x,
+    y,
+    vx: (Math.random() - 0.5) * 1.4,
+    vy: -2.2 - Math.random() * 1.1,
+    bornAt: performance.now(),
+  });
+
+  if (commentBubbles.length > 42) {
+    const oldBubble = commentBubbles.shift();
+    oldBubble.node.remove();
+  }
+}
+
+function tickBubbles(timestamp) {
+  const delta = Math.min((timestamp - (lastBubbleFrame || timestamp)) / 16.67, 2);
+  lastBubbleFrame = timestamp;
+  const obstacles = getBubbleObstacles();
+
+  commentBubbles.forEach((bubble) => {
+    bubble.vy -= 0.018 * delta;
+    bubble.vx *= 0.992;
+    bubble.vy *= 0.996;
+
+    if (timestamp < pointerState.activeUntil) {
+      applyPointerForce(bubble, timestamp);
+    }
+
+    bubble.x += bubble.vx * delta;
+    bubble.y += bubble.vy * delta;
+    resolveWallCollision(bubble);
+    obstacles.forEach((rect) => resolveRectCollision(bubble, rect));
+  });
+
+  resolveBubbleCollisions();
+  commentBubbles.forEach((bubble) => {
+    bubble.node.style.transform = `translate3d(${bubble.x - bubble.radius}px, ${bubble.y - bubble.radius}px, 0)`;
+  });
+
+  window.requestAnimationFrame(tickBubbles);
+}
+
+function applyPointerForce(bubble, timestamp) {
+  const dx = bubble.x - pointerState.x;
+  const dy = bubble.y - pointerState.y;
+  const distance = Math.hypot(dx, dy) || 1;
+  const range = 180;
+  if (distance > range) {
+    return;
+  }
+
+  const force = ((range - distance) / range) * (timestamp < pointerState.activeUntil - 360 ? 0.38 : 0.18);
+  bubble.vx += (dx / distance) * force;
+  bubble.vy += (dy / distance) * force;
+}
+
+function resolveWallCollision(bubble) {
+  const minX = bubble.radius;
+  const maxX = window.innerWidth - bubble.radius;
+  const minY = bubble.radius;
+  const maxY = window.innerHeight - bubble.radius;
+
+  if (bubble.x < minX) {
+    bubble.x = minX;
+    bubble.vx = Math.abs(bubble.vx) * 0.74;
+  } else if (bubble.x > maxX) {
+    bubble.x = maxX;
+    bubble.vx = -Math.abs(bubble.vx) * 0.74;
+  }
+
+  if (bubble.y < minY) {
+    bubble.y = minY;
+    bubble.vy = Math.abs(bubble.vy) * 0.46;
+  } else if (bubble.y > maxY) {
+    bubble.y = maxY;
+    bubble.vy = -Math.abs(bubble.vy) * 0.58;
+  }
+}
+
+function resolveRectCollision(bubble, rect) {
+  const nearestX = clamp(bubble.x, rect.left, rect.right);
+  const nearestY = clamp(bubble.y, rect.top, rect.bottom);
+  const dx = bubble.x - nearestX;
+  const dy = bubble.y - nearestY;
+  const distance = Math.hypot(dx, dy);
+  if (distance >= bubble.radius) {
+    return;
+  }
+
+  const normalX = distance === 0 ? 0 : dx / distance;
+  const normalY = distance === 0 ? -1 : dy / distance;
+  const overlap = bubble.radius - distance + 2;
+  bubble.x += normalX * overlap;
+  bubble.y += normalY * overlap;
+  const velocityAlongNormal = bubble.vx * normalX + bubble.vy * normalY;
+  if (velocityAlongNormal < 0) {
+    bubble.vx -= velocityAlongNormal * normalX * 1.35;
+    bubble.vy -= velocityAlongNormal * normalY * 1.35;
+  }
+}
+
+function resolveBubbleCollisions() {
+  for (let i = 0; i < commentBubbles.length; i += 1) {
+    for (let j = i + 1; j < commentBubbles.length; j += 1) {
+      const a = commentBubbles[i];
+      const b = commentBubbles[j];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const minDistance = a.radius + b.radius + 4;
+      if (distance >= minDistance) {
+        continue;
+      }
+
+      const nx = dx / distance;
+      const ny = dy / distance;
+      const overlap = (minDistance - distance) / 2;
+      a.x -= nx * overlap;
+      a.y -= ny * overlap;
+      b.x += nx * overlap;
+      b.y += ny * overlap;
+      const relativeVelocity = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+      if (relativeVelocity < 0) {
+        const impulse = relativeVelocity * -0.34;
+        a.vx -= impulse * nx;
+        a.vy -= impulse * ny;
+        b.vx += impulse * nx;
+        b.vy += impulse * ny;
+      }
+    }
+  }
+}
+
+function getBubbleObstacles() {
+  const selectors = [
+    ".chapter-grid .comic-panel.is-visible",
+    ".option-strip.is-visible",
+    ".chapter-caption.is-visible",
+    ".overview-chapter",
+    ".comment-qr",
+  ];
+
+  return selectors.flatMap((selector) =>
+    [...document.querySelectorAll(selector)]
+      .filter((element) => element.offsetParent !== null)
+      .map((element) => expandRect(element.getBoundingClientRect(), 8)),
+  );
+}
+
+function expandRect(rect, padding) {
+  return {
+    left: rect.left - padding,
+    top: rect.top - padding,
+    right: rect.right + padding,
+    bottom: rect.bottom + padding,
+  };
+}
+
+function readJson(key, fallback) {
+  try {
+    if (!window.localStorage) {
+      return fallback;
+    }
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJson(key, value) {
+  try {
+    if (window.localStorage) {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch {
+    // Storage can be disabled in embedded preview browsers.
+  }
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
 async function goToNextChapter() {
   const nextIndex = currentChapterIndex + 1;
   if (nextIndex >= chapterData.length) {
@@ -597,6 +983,8 @@ function render() {
   });
 
   revealPanels(track.children[0]);
+  setupCommentQr();
+  setupCommentBubbles();
 }
 
 render();
