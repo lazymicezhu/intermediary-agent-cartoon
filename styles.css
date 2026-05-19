@@ -231,8 +231,9 @@ input {
   border-radius: 0;
   overflow: hidden;
   background-position: center;
-  background-size: cover;
-  background-color: #e9dfca;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #fffdf7;
   transition:
     opacity 1100ms ease,
     filter 1100ms ease,

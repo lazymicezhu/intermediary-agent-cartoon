@@ -1,36 +1,37 @@
 const chapterData = [
   {
-    caption: "林影与潮湿的风在远处慢慢交叠，昏暗天色里浮起一线微光，像沉寂已久的道路终于显露出它真正通往的方向",
+    caption: "中介把小心思藏进合同字缝里：原本承诺“不成功全额退款”，却多塞进一个极小的“不”，让保障悄悄变成“不成功不全额退款”。",
     panels: [
       {
-        image:
-          "https://picsum.photos/seed/chapter1-panel1/900/900",
+        image: "./assets/1A.png",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter1-panel2/900/900",
+        image: "./assets/1B.png",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter1-panel3/900/900",
+        image: "./assets/1C.png",
       },
     ],
     options: [
       {
-        image:
-          "https://picsum.photos/seed/chapter1-option1/900/900",
+        image: "./assets/1D-1.png",
+        ending:
+          "他只看见“名校捷报”的光鲜话术，爽快落笔签约。等申请失败时，才发现合同角落那枚小小的“不”，已经把“全额退款”偷换成“不全额退款”。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter1-option2/900/900",
+        image: "./assets/1D-2.png",
+        ending:
+          "他停下来逐字检查合同，放大镜扫到那枚不起眼的“不”。中介的文字游戏当场露馅，所谓退款承诺也终于露出真正的边界。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter1-option3/900/900",
+        image: "./assets/1D-3.png",
+        ending:
+          "他把合同拿回去问身边同学，前辈一眼指出那句“不会全额退款”的陷阱。多问一句，正好挡住了中介藏在小字里的算盘。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter1-option4/900/900",
+        image: "./assets/1D-4.png",
+        ending:
+          "他没有被催促带走节奏，直接拒绝当场签约。只要不让那枚小小的“不”落进自己的合同，退款承诺就不会被悄悄改写。",
       },
     ],
   },
@@ -95,6 +96,7 @@ let typewriterTimeouts = [];
 const selectedOptions = new Map();
 const commentApiPath = "/api/comments";
 const localCommentKey = "cartoon-comments";
+const bubbleSafeTop = 24;
 const seenCommentIds = new Set();
 const commentBubbles = [];
 const pointerState = {
@@ -401,11 +403,15 @@ function animateDragBack() {
 }
 
 function fillSlot(slot, optionCard) {
+  const selectedOption = getOptionData(optionCard);
   slot.className = "comic-panel is-visible";
   slot.dataset.role = "filled-slot";
   slot.dataset.image = optionCard.dataset.image;
   applyPanelImage(slot, optionCard.dataset.image);
-  selectedOptions.set(currentChapterIndex, optionCard.dataset.image);
+  selectedOptions.set(currentChapterIndex, {
+    image: optionCard.dataset.image,
+    ending: selectedOption?.ending,
+  });
 
   const chapterNode = slot.closest(".chapter");
   dissolvingOptions = freezeOptionsLayout(chapterNode, optionCard);
@@ -426,12 +432,22 @@ async function runChapterTransition(chapterNode) {
   await wait(dissolveDuration);
 
   chapterNode.querySelector(".option-strip").classList.remove("is-visible");
-  await playChapterCaption(chapterNode, chapterData[currentChapterIndex].caption);
+  await playChapterCaption(chapterNode, getSelectedCaption(currentChapterIndex));
 
   await wait(320);
 
   dissolvingOptions = [];
   goToNextChapter();
+}
+
+function getOptionData(optionCard) {
+  const chapterIndex = Number(optionCard.dataset.chapterIndex);
+  const optionIndex = Number(optionCard.dataset.optionIndex);
+  return chapterData[chapterIndex]?.options?.[optionIndex];
+}
+
+function getSelectedCaption(chapterIndex) {
+  return selectedOptions.get(chapterIndex)?.ending || chapterData[chapterIndex].caption;
 }
 
 function playChapterCaption(chapterNode, text) {
@@ -766,7 +782,7 @@ function applyPointerForce(bubble, timestamp) {
 function resolveWallCollision(bubble) {
   const minX = bubble.radius;
   const maxX = window.innerWidth - bubble.radius;
-  const minY = bubble.radius;
+  const minY = bubble.radius + bubbleSafeTop;
   const maxY = window.innerHeight - bubble.radius;
 
   if (bubble.x < minX) {
@@ -942,7 +958,7 @@ async function showAllChaptersOverview(currentChapterNode) {
     const chapterCard = overviewChapterTemplate.content.firstElementChild.cloneNode(true);
     const grid = chapterCard.querySelector(".chapter-grid");
     chapterCard.querySelector(".overview-label").textContent = `第 ${chapterIndex + 1} 章`;
-    chapterCard.querySelector(".overview-caption").textContent = chapter.caption;
+    chapterCard.querySelector(".overview-caption").textContent = getSelectedCaption(chapterIndex);
 
     chapter.panels.forEach((panel) => {
       const panelNode = createPanel(panel);
@@ -950,7 +966,7 @@ async function showAllChaptersOverview(currentChapterNode) {
       grid.append(panelNode);
     });
 
-    const finalImage = selectedOptions.get(chapterIndex) ?? chapter.options[0].image;
+    const finalImage = selectedOptions.get(chapterIndex)?.image ?? chapter.options[0].image;
     const finalPanel = createPanel({ image: finalImage });
     finalPanel.classList.add("is-visible");
     grid.append(finalPanel);
