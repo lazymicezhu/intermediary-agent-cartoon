@@ -916,10 +916,12 @@ function spawnCommentBubble(comment) {
   node.dataset.color = color;
   node.classList.toggle("has-author", Boolean(nickname));
   node.innerHTML = `
-    <span class="comment-bubble__reply-count"></span>
     <span class="comment-bubble__author"></span>
     <span class="comment-bubble__text"></span>
-    <span class="comment-bubble__time"></span>
+    <span class="comment-bubble__meta">
+      <span class="comment-bubble__time"></span>
+      <span class="comment-bubble__reply-count"></span>
+    </span>
     <div class="comment-bubble__replies"></div>
     <form class="comment-bubble__reply-form">
       <textarea class="comment-bubble__reply-input" maxlength="120" placeholder="评论这个气泡"></textarea>
@@ -1006,14 +1008,13 @@ function updateBubbleText(bubble) {
 function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
   const diameter = Math.max((bubble?.radius || 54) * 2, 1);
-  const charsPerLine = Math.max(4, Math.floor((diameter - 38) / 16));
-  const lineCount = diameter < 100 ? 2 : 3;
-  const reservedForBadge = bubble?.replyCount > 0 ? 3 : 0;
-  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 8, 18);
+  const charsPerLine = Math.max(3, Math.floor((diameter - 42) / 16));
+  const reservedForBadge = bubble?.replyCount > 0 ? 2 : 0;
+  const maxLength = clamp(charsPerLine * 2 - reservedForBadge, 6, 14);
   if (normalized.length <= maxLength) {
     return normalized;
   }
-  return `${normalized.slice(0, Math.max(4, maxLength - 2))}...`;
+  return `${normalized.slice(0, Math.max(4, maxLength - 1))}...`;
 }
 
 function renderBubbleReplies(bubble) {

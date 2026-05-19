@@ -40,12 +40,40 @@ function createCommentRow(comment) {
       <time></time>
     </div>
     <p></p>
+    <div class="stats-comment__replies"></div>
   `;
   row.querySelector(".stats-comment__id").textContent = `#${comment.id}`;
   row.querySelector(".stats-comment__name").textContent = comment.nickname || "匿名";
   row.querySelector("time").textContent = formatTime(comment.created_at);
   row.querySelector("p").textContent = comment.text || "";
+  renderReplies(row.querySelector(".stats-comment__replies"), comment.replies || []);
   return row;
+}
+
+function renderReplies(container, replies) {
+  container.textContent = "";
+  if (!replies.length) {
+    return;
+  }
+
+  const title = document.createElement("div");
+  title.className = "stats-comment__reply-title";
+  title.textContent = `回复 ${replies.length} 条`;
+  container.append(title);
+  replies.forEach((reply) => {
+    const item = document.createElement("div");
+    item.className = "stats-comment__reply";
+    const name = reply.nickname || "匿名";
+    item.innerHTML = `
+      <span></span>
+      <time></time>
+      <p></p>
+    `;
+    item.querySelector("span").textContent = name;
+    item.querySelector("time").textContent = formatTime(reply.created_at);
+    item.querySelector("p").textContent = reply.text || "";
+    container.append(item);
+  });
 }
 
 function formatTime(timestamp) {

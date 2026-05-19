@@ -115,7 +115,9 @@ function showSentBubble(text, color) {
   bubble.style.setProperty("--bubble-size", `${size}px`);
   bubble.innerHTML = `
     <span class="comment-bubble__text"></span>
-    <span class="comment-bubble__time"></span>
+    <span class="comment-bubble__meta">
+      <span class="comment-bubble__time"></span>
+    </span>
   `;
   bubble.querySelector(".comment-bubble__text").textContent = createBubblePreviewText(text, { radius: size / 2 });
   bubble.querySelector(".comment-bubble__time").textContent = "刚刚";
@@ -176,9 +178,11 @@ function spawnMobileBubble(comment) {
   bubble.setAttribute("role", "button");
   bubble.style.setProperty("--bubble-size", `${size}px`);
   bubble.innerHTML = `
-    <span class="comment-bubble__reply-count"></span>
     <span class="comment-bubble__text"></span>
-    <span class="comment-bubble__time"></span>
+    <span class="comment-bubble__meta">
+      <span class="comment-bubble__time"></span>
+      <span class="comment-bubble__reply-count"></span>
+    </span>
     <form class="comment-mobile-bubble__reply-form">
       <textarea class="comment-mobile-bubble__reply-input" maxlength="120" placeholder="回复这个气泡"></textarea>
       <button class="comment-mobile-bubble__reply-submit" type="submit">发送</button>
@@ -399,14 +403,13 @@ function updateMobileBubbleText(bubble) {
 function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
   const diameter = Math.max((bubble?.radius || 44) * 2, 1);
-  const charsPerLine = Math.max(4, Math.floor((diameter - 34) / 15));
-  const lineCount = diameter < 92 ? 2 : 3;
-  const reservedForBadge = bubble?.replyCount > 0 ? 3 : 0;
-  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 7, 16);
+  const charsPerLine = Math.max(3, Math.floor((diameter - 38) / 15));
+  const reservedForBadge = bubble?.replyCount > 0 ? 2 : 0;
+  const maxLength = clamp(charsPerLine * 2 - reservedForBadge, 6, 13);
   if (normalized.length <= maxLength) {
     return normalized;
   }
-  return `${normalized.slice(0, Math.max(4, maxLength - 2))}...`;
+  return `${normalized.slice(0, Math.max(4, maxLength - 1))}...`;
 }
 
 function normalizeColor(color) {

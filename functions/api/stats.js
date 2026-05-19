@@ -58,15 +58,55 @@ async function readAllComments(db) {
         "SELECT id, text, nickname, color, created_at FROM comments ORDER BY id DESC LIMIT 500",
       )
       .all();
-    return comments.results || [];
+    return hydrateCommentsWithReplies(db, comments.results || []);
   } catch {
     const comments = await db
       .prepare("SELECT id, text, created_at FROM comments ORDER BY id DESC LIMIT 500")
       .all();
-    return (comments.results || []).map((comment) => ({
+    const rows = (comments.results || []).map((comment) => ({
       ...comment,
       nickname: "",
       color: "blue",
+    }));
+    return hydrateCommentsWithReplies(db, rows);
+  }
+}
+
+async function hydrateCommentsWithReplies(db, comments) {
+  if (!comments.length) {
+    return [];
+  }
+
+  try {
+    const ids = comments.map((comment) => comment.id);
+    const placeholders = ids.map(() => "?").join(",");
+    const replies = await db
+      .prepare(
+        `SELECT id, parent_id, text, nickname, created_at FROM comment_replies WHERE parent_id IN (${placeholders}) ORDER BY id ASC LIMIT 1000`,
+      )
+      .bind(...ids)
+      .all();
+    const repliesByParent = new Map();
+    (replies.results || []).forEach((reply) => {
+      const key = String(reply.parent_id);
+      if (!repliesByParent.has(key)) {
+        repliesByParent.set(key, []);
+      }
+      repliesByParent.get(key).push(reply);
+    });
+    return comments.map((comment) => {
+      const commentReplies = repliesByParent.get(String(comment.id)) || [];
+      return {
+        ...comment,
+        replies: commentReplies,
+        reply_count: commentReplies.length,
+      };
+    });
+  } catch {
+    return comments.map((comment) => ({
+      ...comment,
+      replies: [],
+      reply_count: 0,
     }));
   }
 }

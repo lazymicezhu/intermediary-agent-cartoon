@@ -542,9 +542,6 @@ input {
 }
 
 .comment-bubble__reply-count {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
   display: none;
   min-width: 24px;
   height: 18px;
@@ -591,8 +588,9 @@ input {
   display: block;
   max-width: 100%;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
   line-height: 1.35;
+  white-space: pre-line;
 }
 
 .comment-bubble.is-expanded .comment-bubble__text {
@@ -600,14 +598,17 @@ input {
   overflow: visible;
 }
 
+.comment-bubble__meta {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
 .comment-bubble__time {
   font-size: 0.72rem;
   color: rgba(20, 20, 20, 0.42);
-  transition: transform 180ms ease;
-}
-
-.comment-bubble.has-replies:not(.is-expanded) .comment-bubble__time {
-  transform: translateX(-18px);
 }
 
 .comment-bubble__replies,
@@ -1219,6 +1220,36 @@ input {
   margin: 8px 0 0;
   line-height: 1.7;
   word-break: break-word;
+}
+
+.stats-comment__replies {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stats-comment__reply-title {
+  color: rgba(20, 20, 20, 0.54);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.stats-comment__reply {
+  padding: 8px 10px;
+  border-left: 3px solid rgba(20, 20, 20, 0.24);
+  background: rgba(20, 20, 20, 0.04);
+}
+
+.stats-comment__reply span,
+.stats-comment__reply time {
+  margin-right: 10px;
+  color: rgba(20, 20, 20, 0.54);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.stats-comment__reply p {
+  margin-top: 4px;
 }
 
 .stats-status {
