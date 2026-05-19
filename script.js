@@ -865,17 +865,18 @@ function spawnCommentBubble(comment) {
 
 function getBubbleSpawnPoint(size) {
   const radius = size / 2;
+  const viewport = getViewportSize();
   const leftZone = {
     min: radius + 18,
-    max: Math.max(radius + 18, window.innerWidth * 0.18),
+    max: Math.max(radius + 18, viewport.width * 0.18),
   };
   const rightZone = {
-    min: Math.min(window.innerWidth - radius - 18, window.innerWidth * 0.82),
-    max: window.innerWidth - radius - 18,
+    min: Math.min(viewport.width - radius - 18, viewport.width * 0.82),
+    max: viewport.width - radius - 18,
   };
   const zone = Math.random() < 0.5 ? leftZone : rightZone;
-  const x = clamp(zone.min + Math.random() * (zone.max - zone.min), radius, window.innerWidth - radius);
-  const y = clamp(window.innerHeight * (0.58 + Math.random() * 0.2), radius + bubbleSafeTop, window.innerHeight - radius - 18);
+  const x = clamp(zone.min + Math.random() * (zone.max - zone.min), radius, viewport.width - radius);
+  const y = clamp(viewport.height * (0.58 + Math.random() * 0.2), radius + bubbleSafeTop, viewport.height - radius - 18);
   return { x, y };
 }
 
@@ -988,11 +989,10 @@ function tickBubbles(timestamp) {
 }
 
 function keepBubbleInsideViewport(bubble) {
-  const rect = bubble.node.getBoundingClientRect();
-  const halfWidth = rect.width / 2;
-  const halfHeight = rect.height / 2;
-  bubble.x = clamp(bubble.x, halfWidth + 8, window.innerWidth - halfWidth - 8);
-  bubble.y = clamp(bubble.y, halfHeight + bubbleSafeTop, window.innerHeight - halfHeight - 8);
+  const viewport = getViewportSize();
+  const { halfWidth, halfHeight } = getBubbleHalfSize(bubble);
+  bubble.x = clamp(bubble.x, halfWidth + 8, viewport.width - halfWidth - 8);
+  bubble.y = clamp(bubble.y, halfHeight + bubbleSafeTop, viewport.height - halfHeight - 8);
   bubble.vx = 0;
   bubble.vy = 0;
 }
@@ -1012,10 +1012,12 @@ function applyPointerForce(bubble, timestamp) {
 }
 
 function resolveWallCollision(bubble) {
-  const minX = bubble.radius;
-  const maxX = window.innerWidth - bubble.radius;
-  const minY = bubble.radius + bubbleSafeTop;
-  const maxY = window.innerHeight - bubble.radius;
+  const viewport = getViewportSize();
+  const { halfWidth, halfHeight } = getBubbleHalfSize(bubble);
+  const minX = halfWidth + 8;
+  const maxX = viewport.width - halfWidth - 8;
+  const minY = halfHeight + bubbleSafeTop;
+  const maxY = viewport.height - halfHeight - 8;
 
   if (bubble.x < minX) {
     bubble.x = minX;
@@ -1032,6 +1034,20 @@ function resolveWallCollision(bubble) {
     bubble.y = maxY;
     bubble.vy = -Math.abs(bubble.vy) * 0.58;
   }
+}
+
+function getBubbleHalfSize(bubble) {
+  return {
+    halfWidth: Math.max(bubble.node.offsetWidth / 2, bubble.radius),
+    halfHeight: Math.max(bubble.node.offsetHeight / 2, bubble.radius),
+  };
+}
+
+function getViewportSize() {
+  return {
+    width: window.visualViewport?.width ?? window.innerWidth,
+    height: window.visualViewport?.height ?? window.innerHeight,
+  };
 }
 
 function resolveRectCollision(bubble, rect) {
