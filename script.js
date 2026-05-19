@@ -689,6 +689,7 @@ function setCommentBubblesEnabled(isEnabled) {
   }
 
   stopCommentPolling();
+  clearCommentBubbles();
 }
 
 function updateCommentToggle() {
@@ -716,6 +717,21 @@ function stopCommentPolling() {
 
   window.clearInterval(commentPollingTimer);
   commentPollingTimer = null;
+}
+
+function clearCommentBubbles() {
+  if (draggedBubble) {
+    draggedBubble.node.classList.remove("is-dragging");
+    draggedBubble.isDragging = false;
+    draggedBubble = null;
+  }
+
+  commentBubbles.forEach((bubble) => {
+    bubble.node.remove();
+  });
+  commentBubbles.length = 0;
+  seenCommentIds.clear();
+  lastCommentId = 0;
 }
 
 function handleBubblePointerMove(event) {

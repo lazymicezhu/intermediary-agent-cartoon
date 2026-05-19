@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>失信漫画平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=comment-toggle" />
+    <link rel="stylesheet" href="./styles.css?v=comment-toggle-hide" />
     <link rel="preload" as="image" href="./assets/optimized/1A.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1B.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1C.jpg" />
@@ -40,23 +40,23 @@
       <button class="comment-qr__handle" type="button" aria-label="拖动评论二维码">
         评论
       </button>
+      <a class="comment-qr__link" id="comment-qr-link" href="./comment.html" target="_blank" rel="noopener">
+        <img class="comment-qr__image" id="comment-qr-image" alt="扫码打开评论页面" />
+      </a>
+      <p class="comment-qr__hint">点击或扫码参加评论</p>
       <div class="comment-qr__control">
-        <span>气泡</span>
+        <span>显示评论</span>
         <button
           class="comment-toggle is-on"
           id="comment-toggle"
           type="button"
           role="switch"
           aria-checked="true"
-          aria-label="打开或关闭气泡评论"
+          aria-label="显示或隐藏评论气泡"
         >
           <span></span>
         </button>
       </div>
-      <a class="comment-qr__link" id="comment-qr-link" href="./comment.html" target="_blank" rel="noopener">
-        <img class="comment-qr__image" id="comment-qr-image" alt="扫码打开评论页面" />
-      </a>
-      <p class="comment-qr__hint">点击或扫码参加评论</p>
     </aside>
 
     <template id="chapter-template">
@@ -84,6 +84,6 @@
       </article>
     </template>
 
-    <script type="module" src="./script.js?v=comment-toggle"></script>
+    <script type="module" src="./script.js?v=comment-toggle-hide"></script>
   </body>
 </html>
