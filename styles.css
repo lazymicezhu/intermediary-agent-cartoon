@@ -638,6 +638,50 @@ input {
   cursor: grabbing;
 }
 
+.comment-qr__control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: rgba(20, 20, 20, 0.58);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.comment-toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(20, 20, 20, 0.22);
+  border-radius: 999px;
+  padding: 0;
+  background: rgba(20, 20, 20, 0.22);
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+
+.comment-toggle span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(20, 20, 20, 0.22);
+  transition: transform 180ms ease;
+}
+
+.comment-toggle.is-on {
+  border-color: rgba(24, 118, 242, 0.7);
+  background: #1876f2;
+}
+
+.comment-toggle.is-on span {
+  transform: translateX(20px);
+}
+
 .comment-qr__link {
   display: block;
   border: 1px solid rgba(20, 20, 20, 0.14);
@@ -648,6 +692,14 @@ input {
   display: block;
   width: 100%;
   aspect-ratio: 1;
+}
+
+.comment-qr__hint {
+  margin: 0;
+  color: rgba(20, 20, 20, 0.45);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .comment-page {

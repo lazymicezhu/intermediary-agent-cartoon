@@ -93,6 +93,7 @@ const commentBubbleLayer = document.querySelector("#comment-bubble-layer");
 const commentQr = document.querySelector("#comment-qr");
 const commentQrLink = document.querySelector("#comment-qr-link");
 const commentQrImage = document.querySelector("#comment-qr-image");
+const commentToggle = document.querySelector("#comment-toggle");
 const coverPage = document.querySelector("#cover-page");
 const coverEnter = document.querySelector("#cover-enter");
 
@@ -106,6 +107,7 @@ const selectedOptions = new Map();
 const commentApiPath = "/api/comments";
 const localCommentKey = "cartoon-comments";
 const screenIdKey = "cartoon-screen-id";
+const commentBubblesEnabledKey = "comment-bubbles-enabled";
 const bubbleSafeTop = 24;
 const seenCommentIds = new Set();
 const commentBubbles = [];
@@ -116,6 +118,8 @@ const pointerState = {
 };
 let lastCommentId = 0;
 let commentPollingStarted = false;
+let commentPollingTimer = null;
+let commentBubblesEnabled = true;
 let qrDrag = null;
 let draggedBubble = null;
 let lastBubbleFrame = 0;
@@ -584,12 +588,17 @@ function setupCommentQr() {
     setQrPosition(savedPosition.x, savedPosition.y);
   }
 
+  commentBubblesEnabled = readJson(commentBubblesEnabledKey, true) !== false;
+  updateCommentToggle();
+  commentToggle?.addEventListener("click", () => {
+    setCommentBubblesEnabled(!commentBubblesEnabled);
+  });
   commentQr.addEventListener("pointerdown", handleQrPointerDown);
 }
 
 function handleQrPointerDown(event) {
-  const link = event.target.closest(".comment-qr__link");
-  if (link) {
+  const interactive = event.target.closest(".comment-qr__link, .comment-toggle");
+  if (interactive) {
     return;
   }
 
@@ -663,9 +672,50 @@ function setupCommentBubbles() {
     });
   });
 
-  pollComments();
-  window.setInterval(pollComments, 1000);
+  if (commentBubblesEnabled) {
+    startCommentPolling();
+  }
   window.requestAnimationFrame(tickBubbles);
+}
+
+function setCommentBubblesEnabled(isEnabled) {
+  commentBubblesEnabled = isEnabled;
+  writeJson(commentBubblesEnabledKey, commentBubblesEnabled);
+  updateCommentToggle();
+
+  if (commentBubblesEnabled) {
+    startCommentPolling();
+    return;
+  }
+
+  stopCommentPolling();
+}
+
+function updateCommentToggle() {
+  if (!commentToggle) {
+    return;
+  }
+
+  commentToggle.classList.toggle("is-on", commentBubblesEnabled);
+  commentToggle.setAttribute("aria-checked", String(commentBubblesEnabled));
+}
+
+function startCommentPolling() {
+  if (commentPollingTimer) {
+    return;
+  }
+
+  pollComments();
+  commentPollingTimer = window.setInterval(pollComments, 1000);
+}
+
+function stopCommentPolling() {
+  if (!commentPollingTimer) {
+    return;
+  }
+
+  window.clearInterval(commentPollingTimer);
+  commentPollingTimer = null;
 }
 
 function handleBubblePointerMove(event) {
