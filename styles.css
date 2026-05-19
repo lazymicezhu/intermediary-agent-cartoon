@@ -393,31 +393,36 @@ input {
     box-shadow 220ms ease;
 }
 
-.comment-bubble[data-color="blue"] {
+.comment-bubble[data-color="blue"],
+.comment-page-bubble[data-color="blue"] {
   --bubble-bg:
     radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(179, 214, 255, 0.86) 48%, rgba(255, 229, 130, 0.78));
 }
 
-.comment-bubble[data-color="yellow"] {
+.comment-bubble[data-color="yellow"],
+.comment-page-bubble[data-color="yellow"] {
   --bubble-bg:
     radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 223, 122, 0.88) 46%, rgba(255, 181, 88, 0.72));
 }
 
-.comment-bubble[data-color="green"] {
+.comment-bubble[data-color="green"],
+.comment-page-bubble[data-color="green"] {
   --bubble-bg:
     radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(157, 224, 177, 0.86) 48%, rgba(123, 204, 191, 0.72));
 }
 
-.comment-bubble[data-color="pink"] {
+.comment-bubble[data-color="pink"],
+.comment-page-bubble[data-color="pink"] {
   --bubble-bg:
     radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 177, 205, 0.86) 48%, rgba(255, 206, 134, 0.72));
 }
 
-.comment-bubble[data-color="violet"] {
+.comment-bubble[data-color="violet"],
+.comment-page-bubble[data-color="violet"] {
   --bubble-bg:
     radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(198, 181, 255, 0.86) 48%, rgba(150, 211, 255, 0.72));
