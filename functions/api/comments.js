@@ -60,6 +60,12 @@ async function handlePost({ request, env }) {
   const nickname = String(payload.nickname || "").trim().replace(/\s+/g, " ").slice(0, 16);
   const color = normalizeColor(payload.color);
   const createdAt = Date.now();
+  const parentId = Math.max(0, Number(payload.parent_id || payload.parentId || 0));
+  if (parentId) {
+    const reply = await writeReply(db, { parentId, text, nickname, createdAt });
+    return json({ reply }, 201);
+  }
+
   const comment = await writeComment(db, { text, nickname, color, createdAt });
 
   return json({ comment }, 201);
@@ -73,7 +79,7 @@ async function readComments(db, after, limit) {
       )
       .bind(after, limit)
       .all();
-    return comments.results || [];
+    return hydrateCommentsWithReplies(db, comments.results || []);
   } catch {
     const comments = await db
       .prepare(
@@ -81,10 +87,50 @@ async function readComments(db, after, limit) {
       )
       .bind(after, limit)
       .all();
-    return (comments.results || []).map((comment) => ({
+    const rows = (comments.results || []).map((comment) => ({
       ...comment,
       nickname: "",
       color: "blue",
+    }));
+    return hydrateCommentsWithReplies(db, rows);
+  }
+}
+
+async function hydrateCommentsWithReplies(db, comments) {
+  if (!comments.length) {
+    return [];
+  }
+
+  try {
+    const ids = comments.map((comment) => comment.id);
+    const placeholders = ids.map(() => "?").join(",");
+    const replies = await db
+      .prepare(
+        `SELECT id, parent_id, text, nickname, created_at FROM comment_replies WHERE parent_id IN (${placeholders}) ORDER BY id ASC LIMIT 400`,
+      )
+      .bind(...ids)
+      .all();
+    const repliesByParent = new Map();
+    (replies.results || []).forEach((reply) => {
+      const key = String(reply.parent_id);
+      if (!repliesByParent.has(key)) {
+        repliesByParent.set(key, []);
+      }
+      repliesByParent.get(key).push(reply);
+    });
+    return comments.map((comment) => {
+      const commentReplies = repliesByParent.get(String(comment.id)) || [];
+      return {
+        ...comment,
+        replies: commentReplies,
+        reply_count: commentReplies.length,
+      };
+    });
+  } catch {
+    return comments.map((comment) => ({
+      ...comment,
+      replies: [],
+      reply_count: 0,
     }));
   }
 }
@@ -110,6 +156,15 @@ async function writeComment(db, comment) {
       color: comment.color,
     };
   }
+}
+
+async function writeReply(db, reply) {
+  return db
+    .prepare(
+      "INSERT INTO comment_replies (parent_id, text, nickname, created_at) VALUES (?, ?, ?, ?) RETURNING id, parent_id, text, nickname, created_at",
+    )
+    .bind(reply.parentId, reply.text, reply.nickname, reply.createdAt)
+    .first();
 }
 
 function normalizeColor(color) {

@@ -48,10 +48,22 @@
       ></textarea>
       <div class="comment-form__meta">
         <span class="comment-form__count" id="comment-count">0 / 80</span>
-        <button type="submit" id="comment-submit">发送</button>
+        <div class="comment-form__actions">
+          <button class="comment-form__bubble-button" type="button" id="comment-show-bubbles" aria-expanded="false">
+            显示评论气泡
+          </button>
+          <button type="submit" id="comment-submit">发送</button>
+        </div>
       </div>
       <div class="comment-form__status" id="comment-status" role="status"></div>
     </form>
+    <section class="comment-mobile-bubbles" id="comment-mobile-bubbles" hidden aria-label="当前评论气泡">
+      <div class="comment-mobile-bubbles__head">
+        <span>当前评论</span>
+        <button type="button" id="comment-mobile-bubbles-close" aria-label="关闭评论气泡">×</button>
+      </div>
+      <div class="comment-mobile-bubbles__stage" id="comment-mobile-bubbles-stage"></div>
+    </section>
 
     <script type="module" src="./comment.js?v=preview-bubble-reuse"></script>
   </body>

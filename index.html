@@ -43,19 +43,35 @@
       <a class="comment-qr__link" id="comment-qr-link" href="./comment.html" target="_blank" rel="noopener">
         <img class="comment-qr__image" id="comment-qr-image" alt="扫码打开评论页面" />
       </a>
-      <p class="comment-qr__hint">点击或扫码参加评论</p>
-      <div class="comment-qr__control">
-        <span>显示评论</span>
-        <button
-          class="comment-toggle is-on"
-          id="comment-toggle"
-          type="button"
-          role="switch"
-          aria-checked="true"
-          aria-label="显示或隐藏评论气泡"
-        >
-          <span></span>
+      <div class="comment-qr__footer">
+        <p class="comment-qr__hint">点击或扫码参加评论</p>
+        <button class="comment-settings-toggle" id="comment-settings-toggle" type="button" aria-label="评论设置">
+          ⚙
         </button>
+      </div>
+      <div class="comment-settings" id="comment-settings" hidden>
+        <div class="comment-qr__control">
+          <span>显示评论</span>
+          <button
+            class="comment-toggle is-on"
+            id="comment-toggle"
+            type="button"
+            role="switch"
+            aria-checked="true"
+            aria-label="显示或隐藏评论气泡"
+          >
+            <span></span>
+          </button>
+        </div>
+        <label class="comment-size-control" for="comment-bubble-size">
+          <span>气泡大小</span>
+          <input id="comment-bubble-size" type="range" min="0" max="2" step="1" value="1" />
+          <span class="comment-size-control__labels" aria-hidden="true">
+            <span>小</span>
+            <span>中</span>
+            <span>正常</span>
+          </span>
+        </label>
       </div>
     </aside>
 

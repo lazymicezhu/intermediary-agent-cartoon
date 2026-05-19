@@ -94,6 +94,9 @@ const commentQr = document.querySelector("#comment-qr");
 const commentQrLink = document.querySelector("#comment-qr-link");
 const commentQrImage = document.querySelector("#comment-qr-image");
 const commentToggle = document.querySelector("#comment-toggle");
+const commentSettingsToggle = document.querySelector("#comment-settings-toggle");
+const commentSettings = document.querySelector("#comment-settings");
+const bubbleSizeInput = document.querySelector("#comment-bubble-size");
 const coverPage = document.querySelector("#cover-page");
 const coverEnter = document.querySelector("#cover-enter");
 
@@ -108,7 +111,9 @@ const commentApiPath = "/api/comments";
 const localCommentKey = "cartoon-comments";
 const screenIdKey = "cartoon-screen-id";
 const commentBubblesEnabledKey = "comment-bubbles-enabled";
+const commentBubbleSizeKey = "comment-bubble-size";
 const bubbleSafeTop = 24;
+const bubbleSizeScales = [0.68, 0.84, 1];
 const seenCommentIds = new Set();
 const commentBubbles = [];
 const pointerState = {
@@ -120,9 +125,11 @@ let lastCommentId = 0;
 let commentPollingStarted = false;
 let commentPollingTimer = null;
 let commentBubblesEnabled = true;
+let commentBubbleSizeIndex = 1;
 let qrDrag = null;
 let draggedBubble = null;
 let lastBubbleFrame = 0;
+let lastReplySyncAt = 0;
 let storyStarted = false;
 const preloadedAssets = new Set();
 const screenId = getScreenId();
@@ -589,15 +596,30 @@ function setupCommentQr() {
   }
 
   commentBubblesEnabled = readJson(commentBubblesEnabledKey, true) !== false;
+  commentBubbleSizeIndex = clamp(Math.round(Number(readJson(commentBubbleSizeKey, 1))), 0, 2);
+  if (bubbleSizeInput) {
+    bubbleSizeInput.value = String(commentBubbleSizeIndex);
+    bubbleSizeInput.addEventListener("input", handleBubbleSizeChange);
+  }
   updateCommentToggle();
   commentToggle?.addEventListener("click", () => {
     setCommentBubblesEnabled(!commentBubblesEnabled);
+  });
+  commentSettingsToggle?.addEventListener("click", () => {
+    const isOpen = commentSettings?.hasAttribute("hidden");
+    if (commentSettings) {
+      commentSettings.hidden = !isOpen;
+      if (isOpen) {
+        updateSettingsPlacement();
+      }
+    }
+    commentSettingsToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
   });
   commentQr.addEventListener("pointerdown", handleQrPointerDown);
 }
 
 function handleQrPointerDown(event) {
-  const interactive = event.target.closest(".comment-qr__link, .comment-toggle");
+  const interactive = event.target.closest(".comment-qr__link, .comment-toggle, .comment-settings, .comment-settings-toggle");
   if (interactive) {
     return;
   }
@@ -648,6 +670,16 @@ function setQrPosition(x, y) {
   commentQr.style.left = `${clamp(x, 10, maxX)}px`;
   commentQr.style.top = `${clamp(y, 10, maxY)}px`;
   commentQr.style.bottom = "auto";
+  updateSettingsPlacement();
+}
+
+function handleBubbleSizeChange() {
+  commentBubbleSizeIndex = clamp(Math.round(Number(bubbleSizeInput.value)), 0, 2);
+  writeJson(commentBubbleSizeKey, commentBubbleSizeIndex);
+  commentBubbles.forEach((bubble) => {
+    applyBubbleSize(bubble, bubble.baseSize);
+    keepBubbleInsideViewport(bubble);
+  });
 }
 
 function setupCommentBubbles() {
@@ -743,6 +775,9 @@ function handleBubblePointerMove(event) {
 function handleBubblePointerPress(event) {
   const bubbleNode = event.target.closest(".comment-bubble");
   if (bubbleNode) {
+    if (event.target.closest(".comment-bubble__reply-form, .comment-bubble__reply-input, .comment-bubble__reply-submit")) {
+      return;
+    }
     startBubbleDrag(event, bubbleNode);
     return;
   }
@@ -768,6 +803,16 @@ function keepQrInView() {
   }
   const rect = commentQr.getBoundingClientRect();
   setQrPosition(rect.left, rect.top);
+  updateSettingsPlacement();
+}
+
+function updateSettingsPlacement() {
+  if (!commentQr || !commentSettings || commentSettings.hidden) {
+    return;
+  }
+  const rect = commentQr.getBoundingClientRect();
+  const opensRight = rect.right + 204 < window.innerWidth;
+  commentQr.classList.toggle("settings-open-left", !opensRight);
 }
 
 async function pollComments() {
@@ -781,6 +826,11 @@ async function pollComments() {
     lastCommentId = Math.max(lastCommentId, Number(comment.id) || lastCommentId);
     spawnCommentBubble(comment);
   });
+
+  if (Date.now() - lastReplySyncAt > 3000) {
+    lastReplySyncAt = Date.now();
+    syncBubbleReplies();
+  }
 }
 
 async function fetchRemoteComments() {
@@ -813,6 +863,42 @@ function readLocalCommentsAfter(afterId) {
     .sort((a, b) => Number(a.id) - Number(b.id));
 }
 
+async function syncBubbleReplies() {
+  if (!commentBubbles.length) {
+    return;
+  }
+  let comments;
+  try {
+    const response = await fetch(`${commentApiPath}?after=0&limit=80`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error("Comment API is unavailable");
+    }
+    const payload = await response.json();
+    comments = Array.isArray(payload.comments) ? payload.comments : [];
+  } catch {
+    comments = readLocalCommentsAfter(0);
+  }
+
+  const byId = new Map(comments.map((comment) => [String(comment.id), comment]));
+  commentBubbles.forEach((bubble) => {
+    const fresh = byId.get(String(bubble.id));
+    if (!fresh) {
+      return;
+    }
+    const replies = normalizeReplies(fresh.replies);
+    const replyCount = Math.max(Number(fresh.reply_count) || 0, replies.length);
+    if (replyCount !== bubble.replyCount || replies.length !== bubble.replies.length) {
+      bubble.replies = replies;
+      bubble.replyCount = replyCount;
+      renderBubbleReplies(bubble);
+      keepBubbleInsideViewport(bubble);
+    }
+  });
+}
+
 function spawnCommentBubble(comment) {
   const text = String(comment.text || "").trim();
   if (!text) {
@@ -823,28 +909,38 @@ function spawnCommentBubble(comment) {
   const nickname = String(comment.nickname || "").trim();
   const createdAt = Number(comment.created_at) || Date.now();
   const color = normalizeBubbleColor(comment.color);
-  const size = clamp(86 + text.length * 2.8, 98, 172);
+  const baseSize = clamp(86 + text.length * 2.8, 98, 172);
+  const replies = normalizeReplies(comment.replies);
   node.className = "comment-bubble";
   node.dataset.color = color;
   node.classList.toggle("has-author", Boolean(nickname));
-  node.style.setProperty("--bubble-size", `${size}px`);
   node.innerHTML = `
+    <span class="comment-bubble__reply-count"></span>
     <span class="comment-bubble__author"></span>
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
+    <div class="comment-bubble__replies"></div>
+    <form class="comment-bubble__reply-form">
+      <textarea class="comment-bubble__reply-input" maxlength="120" placeholder="评论这个气泡"></textarea>
+      <button class="comment-bubble__reply-submit" type="submit">发送</button>
+    </form>
   `;
   node.querySelector(".comment-bubble__author").textContent = nickname;
   node.querySelector(".comment-bubble__text").textContent = text;
   node.querySelector(".comment-bubble__time").textContent = formatCommentTime(createdAt);
   node.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
+    if (!event.target.closest(".comment-bubble__reply-form")) {
+      event.preventDefault();
+    }
   });
   commentBubbleLayer.append(node);
 
+  const size = getScaledBubbleSize(baseSize);
   const spawnPoint = getBubbleSpawnPoint(size);
-  commentBubbles.push({
+  const bubble = {
     id: comment.id,
     node,
+    baseSize,
     radius: size / 2,
     x: spawnPoint.x,
     y: spawnPoint.y,
@@ -855,12 +951,128 @@ function spawnCommentBubble(comment) {
     dragStartX: 0,
     dragStartY: 0,
     movedDuringDrag: false,
+    replies,
+    replyCount: Math.max(Number(comment.reply_count) || 0, replies.length),
+  };
+
+  applyBubbleSize(bubble, baseSize);
+  renderBubbleReplies(bubble);
+  node.querySelector(".comment-bubble__reply-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    submitBubbleReply(bubble);
   });
+  commentBubbles.push(bubble);
 
   if (commentBubbles.length > 42) {
     const oldBubble = commentBubbles.shift();
     oldBubble.node.remove();
   }
+}
+
+function normalizeReplies(replies) {
+  return Array.isArray(replies)
+    ? replies
+        .map((reply) => ({
+          id: reply.id,
+          text: String(reply.text || "").trim(),
+          nickname: String(reply.nickname || "").trim(),
+          created_at: Number(reply.created_at) || Date.now(),
+        }))
+        .filter((reply) => reply.text)
+    : [];
+}
+
+function applyBubbleSize(bubble, baseSize) {
+  const size = getScaledBubbleSize(baseSize);
+  bubble.radius = size / 2;
+  bubble.node.style.setProperty("--bubble-size", `${size}px`);
+}
+
+function getScaledBubbleSize(baseSize) {
+  return Math.round(baseSize * (bubbleSizeScales[commentBubbleSizeIndex] || 1));
+}
+
+function renderBubbleReplies(bubble) {
+  const countNode = bubble.node.querySelector(".comment-bubble__reply-count");
+  const repliesNode = bubble.node.querySelector(".comment-bubble__replies");
+  const count = Math.max(bubble.replyCount || 0, bubble.replies.length);
+  bubble.replyCount = count;
+  bubble.node.classList.toggle("has-replies", count > 0);
+  if (countNode) {
+    countNode.textContent = String(count);
+    countNode.setAttribute("aria-label", `${count} 条评论`);
+  }
+  if (!repliesNode) {
+    return;
+  }
+  repliesNode.textContent = "";
+  bubble.replies.forEach((reply) => {
+    const item = document.createElement("div");
+    item.className = "comment-bubble__reply";
+    const author = reply.nickname ? `${reply.nickname}：` : "";
+    item.textContent = `${author}${reply.text}`;
+    repliesNode.append(item);
+  });
+}
+
+async function submitBubbleReply(bubble) {
+  const input = bubble.node.querySelector(".comment-bubble__reply-input");
+  const button = bubble.node.querySelector(".comment-bubble__reply-submit");
+  const text = input.value.trim().replace(/\s+/g, " ").slice(0, 120);
+  if (!text) {
+    return;
+  }
+
+  button.disabled = true;
+  try {
+    const reply = await createReply(bubble.id, text);
+    bubble.replies.push(reply);
+    bubble.replyCount += 1;
+    input.value = "";
+    renderBubbleReplies(bubble);
+    keepBubbleInsideViewport(bubble);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function createReply(parentId, text, nickname = "") {
+  try {
+    const response = await fetch(commentApiPath, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ parent_id: parentId, text, nickname }),
+    });
+    if (!response.ok) {
+      throw new Error("Reply API is unavailable");
+    }
+    const payload = await response.json();
+    return payload.reply || { id: Date.now(), parent_id: parentId, text, nickname, created_at: Date.now() };
+  } catch {
+    return saveLocalReply(parentId, text, nickname);
+  }
+}
+
+function saveLocalReply(parentId, text, nickname) {
+  const comments = readJson(localCommentKey, []);
+  const target = comments.find((comment) => String(comment.id) === String(parentId));
+  const reply = {
+    id: Date.now(),
+    parent_id: parentId,
+    text,
+    nickname,
+    created_at: Date.now(),
+  };
+  if (target) {
+    target.replies = Array.isArray(target.replies) ? target.replies : [];
+    target.replies.push(reply);
+    target.reply_count = target.replies.length;
+    writeJson(localCommentKey, comments.slice(-80));
+  }
+  return reply;
 }
 
 function getBubbleSpawnPoint(size) {
