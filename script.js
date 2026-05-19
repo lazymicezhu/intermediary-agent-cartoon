@@ -678,6 +678,7 @@ function handleBubbleSizeChange() {
   writeJson(commentBubbleSizeKey, commentBubbleSizeIndex);
   commentBubbles.forEach((bubble) => {
     applyBubbleSize(bubble, bubble.baseSize);
+    updateBubbleText(bubble);
     keepBubbleInsideViewport(bubble);
   });
 }
@@ -999,15 +1000,20 @@ function updateBubbleText(bubble) {
     return;
   }
   const isExpanded = bubble.node.classList.contains("is-expanded");
-  textNode.textContent = isExpanded ? bubble.text : createBubblePreviewText(bubble.text);
+  textNode.textContent = isExpanded ? bubble.text : createBubblePreviewText(bubble.text, bubble);
 }
 
-function createBubblePreviewText(text) {
+function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
-  if (normalized.length <= 26) {
+  const diameter = Math.max((bubble?.radius || 54) * 2, 1);
+  const charsPerLine = Math.max(4, Math.floor((diameter - 38) / 16));
+  const lineCount = diameter < 100 ? 2 : 3;
+  const reservedForBadge = bubble?.replyCount > 0 ? 3 : 0;
+  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 8, 18);
+  if (normalized.length <= maxLength) {
     return normalized;
   }
-  return `${normalized.slice(0, 24)}...`;
+  return `${normalized.slice(0, Math.max(4, maxLength - 2))}...`;
 }
 
 function renderBubbleReplies(bubble) {

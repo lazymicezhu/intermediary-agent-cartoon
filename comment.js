@@ -117,7 +117,7 @@ function showSentBubble(text, color) {
     <span class="comment-bubble__text"></span>
     <span class="comment-bubble__time"></span>
   `;
-  bubble.querySelector(".comment-bubble__text").textContent = createBubblePreviewText(text);
+  bubble.querySelector(".comment-bubble__text").textContent = createBubblePreviewText(text, { radius: size / 2 });
   bubble.querySelector(".comment-bubble__time").textContent = "刚刚";
   bubbleLayer.append(bubble);
   window.setTimeout(() => {
@@ -393,15 +393,20 @@ function updateMobileBubbleText(bubble) {
   if (!textNode) {
     return;
   }
-  textNode.textContent = bubble.isExpanded ? bubble.text : createBubblePreviewText(bubble.text);
+  textNode.textContent = bubble.isExpanded ? bubble.text : createBubblePreviewText(bubble.text, bubble);
 }
 
-function createBubblePreviewText(text) {
+function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
-  if (normalized.length <= 22) {
+  const diameter = Math.max((bubble?.radius || 44) * 2, 1);
+  const charsPerLine = Math.max(4, Math.floor((diameter - 34) / 15));
+  const lineCount = diameter < 92 ? 2 : 3;
+  const reservedForBadge = bubble?.replyCount > 0 ? 3 : 0;
+  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 7, 16);
+  if (normalized.length <= maxLength) {
     return normalized;
   }
-  return `${normalized.slice(0, 20)}...`;
+  return `${normalized.slice(0, Math.max(4, maxLength - 2))}...`;
 }
 
 function normalizeColor(color) {

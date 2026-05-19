@@ -543,24 +543,25 @@ input {
 
 .comment-bubble__reply-count {
   position: absolute;
-  right: 14px;
-  bottom: 12px;
+  right: 18px;
+  bottom: 16px;
   display: none;
-  min-width: 26px;
-  height: 20px;
+  min-width: 24px;
+  height: 18px;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: rgba(90, 90, 90, 0.42);
   color: rgba(255, 255, 255, 0.94);
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   font-weight: 700;
+  z-index: 1;
 }
 
 .comment-bubble__reply-count::before {
   content: "";
-  width: 12px;
-  height: 8px;
+  width: 11px;
+  height: 7px;
   margin-right: 3px;
   border: 2px solid currentColor;
   border-radius: 3px;
@@ -602,6 +603,11 @@ input {
 .comment-bubble__time {
   font-size: 0.72rem;
   color: rgba(20, 20, 20, 0.42);
+  transition: transform 180ms ease;
+}
+
+.comment-bubble.has-replies:not(.is-expanded) .comment-bubble__time {
+  transform: translateX(-18px);
 }
 
 .comment-bubble__replies,
