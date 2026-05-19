@@ -4,32 +4,39 @@ const chapterData = [
     panels: [
       {
         image: "./assets/1A.png",
+        aspect: "1186 / 868",
       },
       {
         image: "./assets/1B.png",
+        aspect: "1194 / 872",
       },
       {
         image: "./assets/1C.png",
+        aspect: "1182 / 860",
       },
     ],
     options: [
       {
         image: "./assets/1D-1.png",
+        aspect: "580 / 424",
         ending:
           "他只看见“名校捷报”的光鲜话术，爽快落笔签约。等申请失败时，才发现合同角落那枚小小的“不”，已经把“全额退款”偷换成“不全额退款”。",
       },
       {
         image: "./assets/1D-2.png",
+        aspect: "580 / 426",
         ending:
           "他停下来逐字检查合同，放大镜扫到那枚不起眼的“不”。中介的文字游戏当场露馅，所谓退款承诺也终于露出真正的边界。",
       },
       {
         image: "./assets/1D-3.png",
+        aspect: "578 / 414",
         ending:
           "他把合同拿回去问身边同学，前辈一眼指出那句“不会全额退款”的陷阱。多问一句，正好挡住了中介藏在小字里的算盘。",
       },
       {
         image: "./assets/1D-4.png",
+        aspect: "574 / 410",
         ending:
           "他没有被催促带走节奏，直接拒绝当场签约。只要不让那枚小小的“不”落进自己的合同，退款承诺就不会被悄悄改写。",
       },
@@ -107,6 +114,7 @@ const pointerState = {
 let lastCommentId = 0;
 let commentPollingStarted = false;
 let qrDrag = null;
+let draggedBubble = null;
 let lastBubbleFrame = 0;
 
 function wait(ms) {
@@ -119,6 +127,9 @@ function createPanel(panel, extraClasses = []) {
   const panelNode = panelTemplate.content.firstElementChild.cloneNode(true);
   panelNode.classList.add(...extraClasses);
   panelNode.dataset.image = panel.image;
+  if (panel.aspect) {
+    panelNode.style.setProperty("--panel-aspect", panel.aspect);
+  }
   applyPanelImage(panelNode, panel.image);
   return panelNode;
 }
@@ -130,11 +141,12 @@ function applyPanelImage(panelNode, image) {
     : `url("${image}")`;
 }
 
-function createEmptySlot() {
+function createEmptySlot(aspect) {
   const slot = createPanel(
     {
       image:
         "linear-gradient(135deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.08))",
+      aspect,
     },
     ["is-empty", "is-drop-target"],
   );
@@ -152,7 +164,7 @@ function buildChapter(chapter, index) {
     grid.append(panelNode);
   });
 
-  const slot = createEmptySlot();
+  const slot = createEmptySlot(chapter.panels[0]?.aspect);
   grid.append(slot);
 
   chapter.options.forEach((option, optionIndex) => {
@@ -407,9 +419,14 @@ function fillSlot(slot, optionCard) {
   slot.className = "comic-panel is-visible";
   slot.dataset.role = "filled-slot";
   slot.dataset.image = optionCard.dataset.image;
+  slot.style.setProperty(
+    "--panel-aspect",
+    optionCard.style.getPropertyValue("--panel-aspect") || "1 / 1",
+  );
   applyPanelImage(slot, optionCard.dataset.image);
   selectedOptions.set(currentChapterIndex, {
     image: optionCard.dataset.image,
+    aspect: selectedOption?.aspect,
     ending: selectedOption?.ending,
   });
 
@@ -625,11 +642,16 @@ function setupCommentBubbles() {
   commentPollingStarted = true;
   window.addEventListener("pointermove", handleBubblePointerMove);
   window.addEventListener("pointerdown", handleBubblePointerPress);
+  window.addEventListener("pointermove", handleDraggedBubbleMove, true);
+  window.addEventListener("pointerup", handleDraggedBubbleEnd, true);
+  window.addEventListener("pointercancel", handleDraggedBubbleEnd, true);
   window.addEventListener("resize", keepQrInView);
   window.addEventListener("cartoon-comment", (event) => {
     spawnCommentBubble({
       id: `preview-${Date.now()}`,
       text: event.detail?.text || "新的评论",
+      nickname: event.detail?.nickname || "",
+      color: event.detail?.color || "blue",
       created_at: Date.now(),
     });
   });
@@ -646,6 +668,12 @@ function handleBubblePointerMove(event) {
 }
 
 function handleBubblePointerPress(event) {
+  const bubbleNode = event.target.closest(".comment-bubble");
+  if (bubbleNode) {
+    startBubbleDrag(event, bubbleNode);
+    return;
+  }
+
   pointerState.x = event.clientX;
   pointerState.y = event.clientY;
   pointerState.activeUntil = performance.now() + 620;
@@ -712,10 +740,24 @@ function spawnCommentBubble(comment) {
   }
 
   const node = document.createElement("div");
-  const size = clamp(78 + text.length * 3.4, 88, 156);
+  const nickname = String(comment.nickname || "").trim();
+  const createdAt = Number(comment.created_at) || Date.now();
+  const color = normalizeBubbleColor(comment.color);
+  const size = clamp(86 + text.length * 2.8 + nickname.length * 1.6, 98, 172);
   node.className = "comment-bubble";
-  node.textContent = text;
+  node.dataset.color = color;
   node.style.setProperty("--bubble-size", `${size}px`);
+  node.innerHTML = `
+    <span class="comment-bubble__author"></span>
+    <span class="comment-bubble__text"></span>
+    <span class="comment-bubble__time"></span>
+  `;
+  node.querySelector(".comment-bubble__author").textContent = nickname || "匿名";
+  node.querySelector(".comment-bubble__text").textContent = text;
+  node.querySelector(".comment-bubble__time").textContent = formatCommentTime(createdAt);
+  node.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+  });
   commentBubbleLayer.append(node);
 
   const x = clamp(window.innerWidth * (0.25 + Math.random() * 0.5), size, window.innerWidth - size);
@@ -729,6 +771,10 @@ function spawnCommentBubble(comment) {
     vx: (Math.random() - 0.5) * 1.4,
     vy: -2.2 - Math.random() * 1.1,
     bornAt: performance.now(),
+    isDragging: false,
+    dragStartX: 0,
+    dragStartY: 0,
+    movedDuringDrag: false,
   });
 
   if (commentBubbles.length > 42) {
@@ -737,12 +783,91 @@ function spawnCommentBubble(comment) {
   }
 }
 
+function startBubbleDrag(event, bubbleNode) {
+  const bubble = commentBubbles.find((item) => item.node === bubbleNode);
+  if (!bubble) {
+    return;
+  }
+
+  pointerState.x = event.clientX;
+  pointerState.y = event.clientY;
+  pointerState.activeUntil = performance.now() + 420;
+  draggedBubble = bubble;
+  bubble.pointerId = event.pointerId;
+  bubble.isDragging = true;
+  bubble.dragStartX = event.clientX;
+  bubble.dragStartY = event.clientY;
+  bubble.dragOffsetX = event.clientX - bubble.x;
+  bubble.dragOffsetY = event.clientY - bubble.y;
+  bubble.movedDuringDrag = false;
+  bubble.vx = 0;
+  bubble.vy = 0;
+  bubble.node.classList.add("is-dragging");
+  bubble.node.setPointerCapture(event.pointerId);
+}
+
+function handleDraggedBubbleMove(event) {
+  if (!draggedBubble || event.pointerId !== draggedBubble.pointerId) {
+    return;
+  }
+
+  const dx = event.clientX - draggedBubble.dragStartX;
+  const dy = event.clientY - draggedBubble.dragStartY;
+  draggedBubble.movedDuringDrag ||= Math.hypot(dx, dy) > 6;
+  draggedBubble.x = event.clientX - draggedBubble.dragOffsetX;
+  draggedBubble.y = event.clientY - draggedBubble.dragOffsetY;
+  draggedBubble.vx = dx * 0.05;
+  draggedBubble.vy = dy * 0.05;
+  pointerState.x = event.clientX;
+  pointerState.y = event.clientY;
+  pointerState.activeUntil = performance.now() + 120;
+}
+
+function handleDraggedBubbleEnd(event) {
+  if (!draggedBubble || event.pointerId !== draggedBubble.pointerId) {
+    return;
+  }
+
+  if (draggedBubble.node.hasPointerCapture(event.pointerId)) {
+    draggedBubble.node.releasePointerCapture(event.pointerId);
+  }
+  draggedBubble.node.classList.remove("is-dragging");
+  draggedBubble.isDragging = false;
+  draggedBubble.pointerId = null;
+
+  if (!draggedBubble.movedDuringDrag) {
+    draggedBubble.node.classList.toggle("is-expanded");
+  }
+
+  draggedBubble = null;
+}
+
+function normalizeBubbleColor(color) {
+  return ["blue", "yellow", "green", "pink", "violet"].includes(color) ? color : "blue";
+}
+
+function formatCommentTime(createdAt) {
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) {
+    return "刚刚";
+  }
+  return date.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function tickBubbles(timestamp) {
   const delta = Math.min((timestamp - (lastBubbleFrame || timestamp)) / 16.67, 2);
   lastBubbleFrame = timestamp;
   const obstacles = getBubbleObstacles();
 
   commentBubbles.forEach((bubble) => {
+    if (bubble.isDragging) {
+      resolveWallCollision(bubble);
+      return;
+    }
+
     bubble.vy -= 0.018 * delta;
     bubble.vx *= 0.992;
     bubble.vy *= 0.996;
@@ -829,6 +954,9 @@ function resolveBubbleCollisions() {
     for (let j = i + 1; j < commentBubbles.length; j += 1) {
       const a = commentBubbles[i];
       const b = commentBubbles[j];
+      if (a.isDragging || b.isDragging) {
+        continue;
+      }
       const dx = b.x - a.x;
       const dy = b.y - a.y;
       const distance = Math.hypot(dx, dy) || 1;
@@ -967,7 +1095,10 @@ async function showAllChaptersOverview(currentChapterNode) {
     });
 
     const finalImage = selectedOptions.get(chapterIndex)?.image ?? chapter.options[0].image;
-    const finalPanel = createPanel({ image: finalImage });
+    const finalPanel = createPanel({
+      image: finalImage,
+      aspect: selectedOptions.get(chapterIndex)?.aspect ?? chapter.options[0].aspect,
+    });
     finalPanel.classList.add("is-visible");
     grid.append(finalPanel);
 

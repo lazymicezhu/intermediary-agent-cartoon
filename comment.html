@@ -4,16 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>发送评论</title>
-    <link rel="stylesheet" href="./styles.css?v=comments" />
+    <link rel="stylesheet" href="./styles.css?v=bubble-upgrade" />
   </head>
   <body class="comment-page">
     <form class="comment-form" id="comment-form">
       <h1>发送一条评论</h1>
       <p>提交后，评论会在漫画主页面变成一个漂浮气泡。</p>
+      <input
+        id="comment-nickname"
+        name="nickname"
+        maxlength="16"
+        placeholder="昵称，可不填"
+      />
+      <div class="comment-color" aria-label="选择气泡颜色">
+        <label>
+          <input type="radio" name="color" value="blue" checked />
+          <span class="comment-color__swatch comment-color__swatch--blue"></span>
+        </label>
+        <label>
+          <input type="radio" name="color" value="yellow" />
+          <span class="comment-color__swatch comment-color__swatch--yellow"></span>
+        </label>
+        <label>
+          <input type="radio" name="color" value="green" />
+          <span class="comment-color__swatch comment-color__swatch--green"></span>
+        </label>
+        <label>
+          <input type="radio" name="color" value="pink" />
+          <span class="comment-color__swatch comment-color__swatch--pink"></span>
+        </label>
+        <label>
+          <input type="radio" name="color" value="violet" />
+          <span class="comment-color__swatch comment-color__swatch--violet"></span>
+        </label>
+      </div>
       <textarea
         id="comment-text"
         name="text"
-        maxlength="80"
+        maxlength="180"
         placeholder="写下你的想法"
         required
       ></textarea>
@@ -24,6 +52,6 @@
       <div class="comment-form__status" id="comment-status" role="status"></div>
     </form>
 
-    <script type="module" src="./comment.js?v=comments"></script>
+    <script type="module" src="./comment.js?v=bubble-upgrade"></script>
   </body>
 </html>

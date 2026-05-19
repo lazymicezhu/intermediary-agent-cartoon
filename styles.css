@@ -5,8 +5,8 @@
   --panel-line: #111111;
   --accent-blue: #9bb8ff;
   --transition: 720ms cubic-bezier(0.22, 1, 0.36, 1);
-  --main-panel-size: 260px;
-  --option-panel-size: 170px;
+  --main-panel-size: 320px;
+  --option-panel-size: 190px;
   --overview-scale: 0.72;
 }
 
@@ -39,7 +39,7 @@ input {
   overflow: visible;
   border-radius: 24px;
   background: transparent;
-  min-height: calc(var(--main-panel-size) * 2 + var(--option-panel-size) + 40px);
+  min-height: calc(var(--main-panel-size) * 1.5 + var(--option-panel-size) * 0.78 + 160px);
 }
 
 .chapter-overview[hidden] {
@@ -93,7 +93,7 @@ input {
   transform: scale(var(--overview-scale));
   transform-origin: top center;
   margin: 0;
-  margin-bottom: calc(((var(--main-panel-size) * 2) + 18px) * -0.18);
+  margin-bottom: calc(((var(--main-panel-size) * 1.48) + 18px) * -0.18);
 }
 
 .chapter-track {
@@ -137,7 +137,7 @@ input {
 .chapter-grid {
   display: grid;
   grid-template-columns: repeat(2, var(--main-panel-size));
-  grid-template-rows: repeat(2, var(--main-panel-size));
+  grid-auto-rows: auto;
   gap: 18px;
   width: fit-content;
   margin: 0 auto;
@@ -148,7 +148,8 @@ input {
 
 .comic-panel {
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: var(--panel-aspect, 1 / 1);
   min-height: 0;
   position: relative;
   padding: 0;
@@ -187,7 +188,7 @@ input {
 
 .comic-panel.is-option {
   width: var(--option-panel-size);
-  height: var(--option-panel-size);
+  height: auto;
   cursor: grab;
   opacity: 1;
   transform: none;
@@ -363,16 +364,17 @@ input {
 
 .comment-bubble {
   position: absolute;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: var(--bubble-size, 108px);
   height: var(--bubble-size, 108px);
   padding: 16px;
   border: 2px solid rgba(20, 20, 20, 0.72);
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(179, 214, 255, 0.86) 48%, rgba(255, 229, 130, 0.78));
+  background: var(--bubble-bg);
   box-shadow: 0 16px 30px rgba(20, 20, 20, 0.14);
   color: rgba(20, 20, 20, 0.86);
   font-size: clamp(0.78rem, 1.8vw, 0.98rem);
@@ -381,6 +383,86 @@ input {
   word-break: break-word;
   transform: translate3d(0, 0, 0);
   will-change: transform;
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  transition:
+    width 220ms ease,
+    height 220ms ease,
+    border-radius 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.comment-bubble[data-color="blue"] {
+  --bubble-bg:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(179, 214, 255, 0.86) 48%, rgba(255, 229, 130, 0.78));
+}
+
+.comment-bubble[data-color="yellow"] {
+  --bubble-bg:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 223, 122, 0.88) 46%, rgba(255, 181, 88, 0.72));
+}
+
+.comment-bubble[data-color="green"] {
+  --bubble-bg:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(157, 224, 177, 0.86) 48%, rgba(123, 204, 191, 0.72));
+}
+
+.comment-bubble[data-color="pink"] {
+  --bubble-bg:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 177, 205, 0.86) 48%, rgba(255, 206, 134, 0.72));
+}
+
+.comment-bubble[data-color="violet"] {
+  --bubble-bg:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.2) 28%, transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(198, 181, 255, 0.86) 48%, rgba(150, 211, 255, 0.72));
+}
+
+.comment-bubble.is-dragging {
+  cursor: grabbing;
+  box-shadow: 0 24px 44px rgba(20, 20, 20, 0.22);
+}
+
+.comment-bubble.is-expanded {
+  width: min(320px, calc(100vw - 32px));
+  height: auto;
+  min-height: 156px;
+  border-radius: 18px;
+  padding: 18px 20px;
+  z-index: 2;
+}
+
+.comment-bubble__author {
+  max-width: 100%;
+  font-size: 0.76rem;
+  font-weight: 700;
+  opacity: 0.62;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.comment-bubble__text {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.comment-bubble.is-expanded .comment-bubble__text {
+  display: block;
+  overflow: visible;
+}
+
+.comment-bubble__time {
+  font-size: 0.72rem;
+  color: rgba(20, 20, 20, 0.42);
 }
 
 .comment-qr {
@@ -469,6 +551,69 @@ input {
   color: var(--ink);
 }
 
+.comment-form input[type="text"],
+.comment-form input:not([type]) {
+  width: 100%;
+  height: 42px;
+  border: 2px solid rgba(20, 20, 20, 0.8);
+  padding: 0 12px;
+  background: #fffdf7;
+  color: var(--ink);
+}
+
+.comment-color {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.comment-color label {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.comment-color input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+}
+
+.comment-color__swatch {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(20, 20, 20, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.comment-color input:checked + .comment-color__swatch {
+  border-color: #141414;
+  box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.12);
+}
+
+.comment-color__swatch--blue {
+  background: linear-gradient(145deg, #ffffff, #b3d6ff 55%, #ffe582);
+}
+
+.comment-color__swatch--yellow {
+  background: linear-gradient(145deg, #ffffff, #ffdf7a 55%, #ffb558);
+}
+
+.comment-color__swatch--green {
+  background: linear-gradient(145deg, #ffffff, #9de0b1 55%, #7bccbf);
+}
+
+.comment-color__swatch--pink {
+  background: linear-gradient(145deg, #ffffff, #ffb1cd 55%, #ffce86);
+}
+
+.comment-color__swatch--violet {
+  background: linear-gradient(145deg, #ffffff, #c6b5ff 55%, #96d3ff);
+}
+
 .comment-form__meta {
   display: flex;
   align-items: center;
@@ -504,13 +649,12 @@ input {
 
 @media (max-width: 920px) {
   :root {
-    --main-panel-size: min(38vw, 220px);
-    --option-panel-size: min(22vw, 150px);
+    --main-panel-size: min(44vw, 300px);
+    --option-panel-size: min(24vw, 156px);
   }
 
   .chapter.is-complete .chapter-grid {
     grid-template-columns: repeat(2, var(--main-panel-size));
-    grid-template-rows: repeat(2, var(--main-panel-size));
   }
 
   .options {
@@ -522,7 +666,7 @@ input {
 
 @media (max-width: 560px) {
   :root {
-    --main-panel-size: min(42vw, 180px);
+    --main-panel-size: min(44vw, 190px);
     --option-panel-size: min(42vw, 150px);
   }
 
@@ -538,7 +682,7 @@ input {
 
   .comic-panel.is-option {
     width: var(--option-panel-size);
-    height: var(--option-panel-size);
+    height: auto;
   }
 
   .comment-qr {

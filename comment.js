@@ -1,5 +1,6 @@
 const form = document.querySelector("#comment-form");
 const textInput = document.querySelector("#comment-text");
+const nicknameInput = document.querySelector("#comment-nickname");
 const countNode = document.querySelector("#comment-count");
 const statusNode = document.querySelector("#comment-status");
 const submitButton = document.querySelector("#comment-submit");
@@ -13,7 +14,7 @@ function setStatus(message) {
   statusNode.textContent = message;
 }
 
-async function submitComment(text) {
+async function submitComment(comment) {
   try {
     const response = await fetch("/api/comments", {
       method: "POST",
@@ -21,7 +22,7 @@ async function submitComment(text) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify(comment),
     });
 
     if (!response.ok) {
@@ -30,16 +31,18 @@ async function submitComment(text) {
 
     return response.json();
   } catch {
-    return saveLocalComment(text);
+    return saveLocalComment(comment);
   }
 }
 
-function saveLocalComment(text) {
+function saveLocalComment(commentInput) {
   const comments = readLocalComments();
   const lastId = comments.reduce((maxId, comment) => Math.max(maxId, Number(comment.id) || 0), 0);
   const comment = {
     id: lastId + 1,
-    text,
+    text: commentInput.text,
+    nickname: commentInput.nickname,
+    color: commentInput.color,
     created_at: Date.now(),
   };
   comments.push(comment);
@@ -66,6 +69,8 @@ textInput.addEventListener("input", updateCount);
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const text = textInput.value.trim().replace(/\s+/g, " ");
+  const nickname = nicknameInput.value.trim().replace(/\s+/g, " ").slice(0, 16);
+  const color = new FormData(form).get("color") || "blue";
   if (!text) {
     setStatus("先写一点内容再发送。");
     return;
@@ -75,8 +80,9 @@ form.addEventListener("submit", async (event) => {
   setStatus("发送中...");
 
   try {
-    await submitComment(text);
+    await submitComment({ text, nickname, color });
     textInput.value = "";
+    nicknameInput.value = "";
     updateCount();
     setStatus("已发送，请看主屏幕。");
   } catch {

@@ -30,14 +30,9 @@ async function handleGet({ request, env }) {
   const url = new URL(request.url);
   const after = Math.max(0, Number(url.searchParams.get("after") || 0));
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 40), 1), 80);
-  const comments = await db
-    .prepare(
-      "SELECT id, text, created_at FROM comments WHERE id > ? ORDER BY id ASC LIMIT ?",
-    )
-    .bind(after, limit)
-    .all();
+  const comments = await readComments(db, after, limit);
 
-  return json({ comments: comments.results || [] });
+  return json({ comments });
 }
 
 async function handlePost({ request, env }) {
@@ -53,20 +48,69 @@ async function handlePost({ request, env }) {
     return json({ error: "Invalid JSON" }, 400);
   }
 
-  const text = String(payload.text || "").trim().replace(/\s+/g, " ").slice(0, 80);
+  const text = String(payload.text || "").trim().replace(/\s+/g, " ").slice(0, 180);
   if (!text) {
     return json({ error: "Comment text is required" }, 400);
   }
 
+  const nickname = String(payload.nickname || "").trim().replace(/\s+/g, " ").slice(0, 16);
+  const color = normalizeColor(payload.color);
   const createdAt = Date.now();
-  const comment = await db
-    .prepare(
-      "INSERT INTO comments (text, created_at) VALUES (?, ?) RETURNING id, text, created_at",
-    )
-    .bind(text, createdAt)
-    .first();
+  const comment = await writeComment(db, { text, nickname, color, createdAt });
 
   return json({ comment }, 201);
+}
+
+async function readComments(db, after, limit) {
+  try {
+    const comments = await db
+      .prepare(
+        "SELECT id, text, nickname, color, created_at FROM comments WHERE id > ? ORDER BY id ASC LIMIT ?",
+      )
+      .bind(after, limit)
+      .all();
+    return comments.results || [];
+  } catch {
+    const comments = await db
+      .prepare(
+        "SELECT id, text, created_at FROM comments WHERE id > ? ORDER BY id ASC LIMIT ?",
+      )
+      .bind(after, limit)
+      .all();
+    return (comments.results || []).map((comment) => ({
+      ...comment,
+      nickname: "",
+      color: "blue",
+    }));
+  }
+}
+
+async function writeComment(db, comment) {
+  try {
+    return await db
+      .prepare(
+        "INSERT INTO comments (text, nickname, color, created_at) VALUES (?, ?, ?, ?) RETURNING id, text, nickname, color, created_at",
+      )
+      .bind(comment.text, comment.nickname, comment.color, comment.createdAt)
+      .first();
+  } catch {
+    const saved = await db
+      .prepare(
+        "INSERT INTO comments (text, created_at) VALUES (?, ?) RETURNING id, text, created_at",
+      )
+      .bind(comment.text, comment.createdAt)
+      .first();
+    return {
+      ...saved,
+      nickname: comment.nickname,
+      color: comment.color,
+    };
+  }
+}
+
+function normalizeColor(color) {
+  const allowedColors = new Set(["blue", "yellow", "green", "pink", "violet"]);
+  return allowedColors.has(color) ? color : "blue";
 }
 
 function getDatabase(env) {
