@@ -1,4 +1,5 @@
 const form = document.querySelector("#comment-form");
+const composer = document.querySelector(".comment-composer");
 const textInput = document.querySelector("#comment-text");
 const nicknameInput = document.querySelector("#comment-nickname");
 const countNode = document.querySelector("#comment-count");
@@ -130,11 +131,13 @@ function showSentBubble(text, color) {
 async function toggleMobileBubbles() {
   const willShow = mobileBubblesPanel.hidden;
   mobileBubblesPanel.hidden = !willShow;
+  composer.hidden = willShow;
   showBubblesButton.setAttribute("aria-expanded", String(willShow));
   if (willShow) {
     await renderMobileBubbles();
     startMobileBubblePhysics();
   } else {
+    composer.hidden = false;
     clearMobileBubbles();
   }
 }
@@ -167,7 +170,7 @@ function spawnMobileBubble(comment) {
     return;
   }
 
-  const size = clamp(62 + text.length * 1.25, 76, 112);
+  const size = clamp((86 + text.length * 2.8) * 0.72, 78, 124);
   const radius = size / 2;
   const rect = mobileBubblesStage.getBoundingClientRect();
   const bubble = document.createElement("div");
@@ -183,6 +186,7 @@ function spawnMobileBubble(comment) {
       <span class="comment-bubble__time"></span>
       <span class="comment-bubble__reply-count"></span>
     </span>
+    <div class="comment-mobile-bubble__replies"></div>
     <form class="comment-mobile-bubble__reply-form">
       <textarea class="comment-mobile-bubble__reply-input" maxlength="120" placeholder="回复这个气泡"></textarea>
       <button class="comment-mobile-bubble__reply-submit" type="submit">发送</button>
@@ -195,6 +199,7 @@ function spawnMobileBubble(comment) {
     text,
     baseRadius: radius,
     radius,
+    replies: normalizeReplies(comment.replies),
     replyCount,
     x: clamp(rect.width * (0.28 + Math.random() * 0.44), radius + 8, rect.width - radius - 8),
     y: rect.height + radius + Math.random() * 22,
@@ -204,6 +209,7 @@ function spawnMobileBubble(comment) {
   };
   updateMobileBubbleText(item);
   updateMobileBubbleReplyCount(item);
+  renderMobileBubbleReplies(item);
   bubble.addEventListener("click", (event) => {
     if (event.target.closest(".comment-mobile-bubble__reply-form")) {
       return;
@@ -343,6 +349,7 @@ function expandMobileBubble(bubble) {
   bubble.node.classList.add("is-expanded");
   bubble.node.setAttribute("role", "group");
   updateMobileBubbleText(bubble);
+  renderMobileBubbleReplies(bubble);
   const rect = mobileBubblesStage.getBoundingClientRect();
   bubble.x = rect.width / 2;
   bubble.y = clamp(bubble.y, 116, rect.height - 116);
@@ -373,10 +380,20 @@ async function submitMobileBubbleReply(bubble) {
   button.disabled = true;
   try {
     const nickname = nicknameInput.value.trim().replace(/\s+/g, " ").slice(0, 16);
-    await submitComment({ text, nickname, color: normalizeColor(bubble.comment.color), parent_id: bubble.comment.id });
+    const payload = await submitComment({ text, nickname, color: normalizeColor(bubble.comment.color), parent_id: bubble.comment.id });
+    const reply = payload.reply || {
+      id: Date.now(),
+      parent_id: bubble.comment.id,
+      text,
+      nickname,
+      created_at: Date.now(),
+    };
+    bubble.replies.push(reply);
     bubble.replyCount += 1;
+    bubble.comment.replies = bubble.replies;
     bubble.comment.reply_count = bubble.replyCount;
     updateMobileBubbleReplyCount(bubble);
+    renderMobileBubbleReplies(bubble);
     setStatus("已发送回复。");
     collapseMobileBubble(bubble);
   } catch {
@@ -392,6 +409,21 @@ function updateMobileBubbleReplyCount(bubble) {
   bubble.node.classList.toggle("has-replies", bubble.replyCount > 0);
 }
 
+function renderMobileBubbleReplies(bubble) {
+  const repliesNode = bubble.node.querySelector(".comment-mobile-bubble__replies");
+  if (!repliesNode) {
+    return;
+  }
+  repliesNode.textContent = "";
+  bubble.replies.forEach((reply) => {
+    const item = document.createElement("div");
+    item.className = "comment-mobile-bubble__reply";
+    const author = reply.nickname ? `${reply.nickname}：` : "";
+    item.textContent = `${author}${reply.text}`;
+    repliesNode.append(item);
+  });
+}
+
 function updateMobileBubbleText(bubble) {
   const textNode = bubble.node.querySelector(".comment-bubble__text");
   if (!textNode) {
@@ -402,17 +434,30 @@ function updateMobileBubbleText(bubble) {
 
 function createBubblePreviewText(text, bubble) {
   const normalized = String(text || "").trim();
-  const diameter = Math.max((bubble?.radius || 44) * 2, 1);
-  const charsPerLine = Math.max(3, Math.floor((diameter - 38) / 15));
-  const lineCapacity = diameter >= 110 ? 4 : diameter >= 96 ? 3 : diameter >= 82 ? 2 : 1;
+  const diameter = Math.max((bubble?.radius || 54) * 2, 1);
+  const charsPerLine = Math.max(3, Math.floor((diameter - 42) / 16));
+  const lineCapacity = diameter >= 138 ? 4 : diameter >= 112 ? 3 : diameter >= 92 ? 2 : 1;
   const desiredLines = Math.ceil(normalized.length / charsPerLine);
   const lineCount = clamp(desiredLines, 1, lineCapacity);
   const reservedForBadge = bubble?.replyCount > 0 ? 2 : 0;
-  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 4, 24);
+  const maxLength = clamp(charsPerLine * lineCount - reservedForBadge, 4, 28);
   if (normalized.length <= maxLength) {
     return normalized;
   }
   return `${normalized.slice(0, Math.max(2, maxLength - 1))}...`;
+}
+
+function normalizeReplies(replies) {
+  return Array.isArray(replies)
+    ? replies
+        .map((reply) => ({
+          id: reply.id,
+          text: String(reply.text || "").trim(),
+          nickname: String(reply.nickname || "").trim(),
+          created_at: Number(reply.created_at) || Date.now(),
+        }))
+        .filter((reply) => reply.text)
+    : [];
 }
 
 function normalizeColor(color) {
@@ -435,8 +480,15 @@ textInput.addEventListener("input", updateCount);
 showBubblesButton.addEventListener("click", toggleMobileBubbles);
 mobileBubblesClose.addEventListener("click", () => {
   mobileBubblesPanel.hidden = true;
+  composer.hidden = false;
   showBubblesButton.setAttribute("aria-expanded", "false");
   clearMobileBubbles();
+});
+mobileBubblesStage.addEventListener("click", (event) => {
+  if (!expandedMobileBubble || event.target.closest(".comment-mobile-bubble")) {
+    return;
+  }
+  collapseMobileBubble(expandedMobileBubble);
 });
 
 form.addEventListener("submit", async (event) => {

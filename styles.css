@@ -894,6 +894,15 @@ input {
   box-shadow: 0 20px 44px rgba(20, 20, 20, 0.13);
 }
 
+.comment-composer {
+  display: grid;
+  gap: 16px;
+}
+
+.comment-composer[hidden] {
+  display: none;
+}
+
 .comment-form h1 {
   margin: 0;
   font-size: 1.42rem;
@@ -1026,17 +1035,11 @@ input {
 }
 
 .comment-mobile-bubbles {
-  position: fixed;
-  inset: auto 14px 14px;
-  z-index: 8;
+  position: relative;
   display: grid;
-  grid-template-rows: auto minmax(260px, 1fr);
+  grid-template-rows: auto minmax(360px, 1fr);
   gap: 12px;
-  height: min(62vh, 540px);
-  padding: 14px;
-  border: 2px solid rgba(20, 20, 20, 0.78);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 18px 38px rgba(20, 20, 20, 0.18);
+  min-height: min(560px, calc(100vh - 116px));
   overflow: hidden;
 }
 
@@ -1052,13 +1055,15 @@ input {
 }
 
 .comment-mobile-bubbles__head button {
-  width: 34px;
-  height: 34px;
+  width: auto;
+  min-width: 94px;
+  height: 36px;
   border: 0;
-  border-radius: 999px;
-  background: rgba(20, 20, 20, 0.08);
-  color: rgba(20, 20, 20, 0.74);
-  font-size: 1.3rem;
+  border-radius: 0;
+  background: #141414;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -1087,14 +1092,53 @@ input {
   cursor: pointer;
 }
 
+.comment-mobile-bubble .comment-bubble__meta {
+  min-height: 0;
+}
+
+.comment-mobile-bubble .comment-bubble__time {
+  display: none;
+}
+
 .comment-mobile-bubble.is-expanded {
   width: min(268px, calc(100vw - 76px));
-  min-height: 150px;
-  max-height: min(300px, calc(62vh - 92px));
+  min-height: 270px;
+  max-height: min(420px, calc(100vh - 210px));
   padding: 16px;
   border-radius: 18px;
   cursor: default;
   overflow: hidden;
+}
+
+.comment-mobile-bubble.is-expanded .comment-bubble__text {
+  max-height: 108px;
+  overflow: auto;
+  text-align: left;
+}
+
+.comment-mobile-bubble__replies {
+  display: none;
+}
+
+.comment-mobile-bubble.is-expanded .comment-mobile-bubble__replies {
+  display: grid;
+  width: 100%;
+  max-height: 132px;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(20, 20, 20, 0.14);
+  overflow: auto;
+  text-align: left;
+}
+
+.comment-mobile-bubble__reply {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.48);
+  color: rgba(20, 20, 20, 0.74);
+  font-size: 0.76rem;
+  line-height: 1.45;
 }
 
 .comment-mobile-bubble__reply-form {
@@ -1104,15 +1148,16 @@ input {
 .comment-mobile-bubble.is-expanded .comment-mobile-bubble__reply-form {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .comment-mobile-bubble__reply-input {
   min-width: 0;
-  min-height: 42px;
-  max-height: 86px;
+  width: 100%;
+  min-height: 46px;
+  max-height: 72px;
   resize: vertical;
   border: 1px solid rgba(20, 20, 20, 0.34);
   border-radius: 8px;
@@ -1124,7 +1169,7 @@ input {
 }
 
 .comment-mobile-bubble__reply-submit {
-  align-self: end;
+  justify-self: stretch;
   height: 42px;
   border: 0;
   border-radius: 8px;
@@ -1344,7 +1389,7 @@ input {
   }
 
   .comment-mobile-bubbles {
-    inset: auto 10px 10px;
-    height: min(62vh, 480px);
+    grid-template-rows: auto minmax(330px, 1fr);
+    min-height: min(540px, calc(100vh - 92px));
   }
 }

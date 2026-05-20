@@ -8,62 +8,64 @@
   </head>
   <body class="comment-page">
     <div class="comment-page-bubble-layer" id="comment-page-bubble-layer"></div>
-    <form class="comment-form" id="comment-form">
-      <h1>发送一条评论</h1>
-      <p>提交后，评论会在漫画主页面变成一个漂浮气泡。</p>
-      <input
-        id="comment-nickname"
-        name="nickname"
-        maxlength="16"
-        placeholder="昵称，可不填"
-      />
-      <div class="comment-color" aria-label="选择气泡颜色">
-        <label>
-          <input type="radio" name="color" value="blue" checked />
-          <span class="comment-color__swatch comment-color__swatch--blue"></span>
-        </label>
-        <label>
-          <input type="radio" name="color" value="yellow" />
-          <span class="comment-color__swatch comment-color__swatch--yellow"></span>
-        </label>
-        <label>
-          <input type="radio" name="color" value="green" />
-          <span class="comment-color__swatch comment-color__swatch--green"></span>
-        </label>
-        <label>
-          <input type="radio" name="color" value="pink" />
-          <span class="comment-color__swatch comment-color__swatch--pink"></span>
-        </label>
-        <label>
-          <input type="radio" name="color" value="violet" />
-          <span class="comment-color__swatch comment-color__swatch--violet"></span>
-        </label>
-      </div>
-      <textarea
-        id="comment-text"
-        name="text"
-        maxlength="180"
-        placeholder="写下你的想法"
-        required
-      ></textarea>
-      <div class="comment-form__meta">
-        <span class="comment-form__count" id="comment-count">0 / 80</span>
-        <div class="comment-form__actions">
-          <button class="comment-form__bubble-button" type="button" id="comment-show-bubbles" aria-expanded="false">
-            显示评论气泡
-          </button>
-          <button type="submit" id="comment-submit">发送</button>
+    <main class="comment-form" id="comment-card">
+      <form class="comment-composer" id="comment-form">
+        <h1>发送一条评论</h1>
+        <p>提交后，评论会在漫画主页面变成一个漂浮气泡。</p>
+        <input
+          id="comment-nickname"
+          name="nickname"
+          maxlength="16"
+          placeholder="昵称，可不填"
+        />
+        <div class="comment-color" aria-label="选择气泡颜色">
+          <label>
+            <input type="radio" name="color" value="blue" checked />
+            <span class="comment-color__swatch comment-color__swatch--blue"></span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="yellow" />
+            <span class="comment-color__swatch comment-color__swatch--yellow"></span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="green" />
+            <span class="comment-color__swatch comment-color__swatch--green"></span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="pink" />
+            <span class="comment-color__swatch comment-color__swatch--pink"></span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="violet" />
+            <span class="comment-color__swatch comment-color__swatch--violet"></span>
+          </label>
         </div>
-      </div>
-      <div class="comment-form__status" id="comment-status" role="status"></div>
-    </form>
-    <section class="comment-mobile-bubbles" id="comment-mobile-bubbles" hidden aria-label="当前评论气泡">
-      <div class="comment-mobile-bubbles__head">
-        <span>当前评论</span>
-        <button type="button" id="comment-mobile-bubbles-close" aria-label="关闭评论气泡">×</button>
-      </div>
-      <div class="comment-mobile-bubbles__stage" id="comment-mobile-bubbles-stage"></div>
-    </section>
+        <textarea
+          id="comment-text"
+          name="text"
+          maxlength="180"
+          placeholder="写下你的想法"
+          required
+        ></textarea>
+        <div class="comment-form__meta">
+          <span class="comment-form__count" id="comment-count">0 / 80</span>
+          <div class="comment-form__actions">
+            <button class="comment-form__bubble-button" type="button" id="comment-show-bubbles" aria-expanded="false">
+              显示评论气泡
+            </button>
+            <button type="submit" id="comment-submit">发送</button>
+          </div>
+        </div>
+        <div class="comment-form__status" id="comment-status" role="status"></div>
+      </form>
+      <section class="comment-mobile-bubbles" id="comment-mobile-bubbles" hidden aria-label="当前评论气泡">
+        <div class="comment-mobile-bubbles__head">
+          <span>当前评论</span>
+          <button type="button" id="comment-mobile-bubbles-close">返回发送</button>
+        </div>
+        <div class="comment-mobile-bubbles__stage" id="comment-mobile-bubbles-stage"></div>
+      </section>
+    </main>
 
     <script type="module" src="./comment.js?v=preview-bubble-reuse"></script>
   </body>
