@@ -4,76 +4,127 @@ const chapterData = [
     panels: [
       {
         image: "./assets/optimized/1A.jpg",
-        aspect: "1186 / 868",
+        aspect: "900 / 658",
       },
       {
         image: "./assets/optimized/1B.jpg",
-        aspect: "1194 / 872",
+        aspect: "900 / 657",
       },
       {
         image: "./assets/optimized/1C.jpg",
-        aspect: "1182 / 860",
+        aspect: "900 / 655",
       },
     ],
     options: [
       {
         image: "./assets/optimized/1D-1.jpg",
-        aspect: "580 / 424",
+        aspect: "900 / 658",
         ending:
           "他只看见“名校捷报”的光鲜话术，爽快落笔签约。等申请失败时，才发现合同角落那枚小小的“不”，已经把“全额退款”偷换成“不全额退款”。",
       },
       {
         image: "./assets/optimized/1D-2.jpg",
-        aspect: "580 / 426",
+        aspect: "900 / 658",
         ending:
           "他停下来逐字检查合同，放大镜扫到那枚不起眼的“不”。中介的文字游戏当场露馅，所谓退款承诺也终于露出真正的边界。",
       },
       {
         image: "./assets/optimized/1D-3.jpg",
-        aspect: "578 / 414",
+        aspect: "900 / 658",
         ending:
           "他把合同拿回去问身边同学，前辈一眼指出那句“不会全额退款”的陷阱。多问一句，正好挡住了中介藏在小字里的算盘。",
       },
       {
         image: "./assets/optimized/1D-4.jpg",
-        aspect: "574 / 410",
+        aspect: "900 / 658",
         ending:
           "他没有被催促带走节奏，直接拒绝当场签约。只要不让那枚小小的“不”落进自己的合同，退款承诺就不会被悄悄改写。",
       },
     ],
   },
   {
-    caption: "水面轻轻荡开一圈又一圈薄雾，暮色在天边缓缓沉落，未尽的话语与更远的回声一起，沿着看不见的岸线继续向前延展",
+    caption: "中介把“全程代办”包装成省心服务，却在申请材料里偷偷塞进伪造经历。等录取结果到手，申请人才发现那份看似漂亮的 offer 背后，藏着足以毁掉留学记录的假材料。",
     panels: [
       {
-        image:
-          "https://picsum.photos/seed/chapter2-panel1/900/900",
+        image: "./assets/optimized/2A.jpg",
+        aspect: "1200 / 896",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter2-panel2/900/900",
+        image: "./assets/optimized/2B.jpg",
+        aspect: "1200 / 896",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter2-panel3/900/900",
+        image: "./assets/optimized/2C.jpg",
+        aspect: "1200 / 896",
       },
     ],
     options: [
       {
-        image:
-          "https://picsum.photos/seed/chapter2-option1/900/900",
+        image: "./assets/optimized/2D-1.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "她没有被“先拿 offer 再说”的话术继续绑架，拒绝录取并起诉中介。假材料带来的风险不该由申请人独自承担，合同之外的责任也必须被摊开追问。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter2-option2/900/900",
+        image: "./assets/optimized/2D-2.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "她选择先接受 offer、出国后再处理问题。眼前看似保住了机会，但伪造经历已经留在申请链路里，后续签证、注册和背景核验都可能变成新的隐患。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter2-option3/900/900",
+        image: "./assets/optimized/2D-3.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "她把伪造材料的经过公开曝光，舆论很快把中介从“专业规划”拉回到责任现场。曝光不能替代维权，但能让更多人看见这类代办背后的风险。",
       },
       {
-        image:
-          "https://picsum.photos/seed/chapter2-option4/900/900",
+        image: "./assets/optimized/2D-4.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "她拒绝这份问题 offer，重新整理真实材料自己申请。虽然多花了时间，但至少把主动权拿回手里，也把最危险的伪造记录挡在了入学之前。",
+      },
+    ],
+  },
+  {
+    caption: "社媒上的“留学专家”把焦虑包装成捷径：先用高成功率和名校通道催人交定金，再用尾款、威胁和沉没成本一步步把学生推向更深的陷阱。",
+    panels: [
+      {
+        image: "./assets/optimized/3A.jpg",
+        aspect: "1200 / 896",
+      },
+      {
+        image: "./assets/optimized/3B.jpg",
+        aspect: "1200 / 896",
+      },
+      {
+        image: "./assets/optimized/3C.jpg",
+        aspect: "1200 / 896",
+      },
+    ],
+    options: [
+      {
+        image: "./assets/optimized/3D-1.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "他被威胁吓住，补交了所谓尾款。钱转出去后，对方没有兑现承诺，反而把沉没成本变成下一轮勒索的筹码。",
+      },
+      {
+        image: "./assets/optimized/3D-2.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "他没有继续付款，而是保存聊天、转账和页面证据后报警。骗局最怕留下完整链条，越早固定证据，越有机会把损失止住。",
+      },
+      {
+        image: "./assets/optimized/3D-3.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "他假装配合，拖住对方并暗中报警。风险没有消失，但冷静争取时间，让线索、地点和证据有了被及时接住的机会。",
+      },
+      {
+        image: "./assets/optimized/3D-4.jpg",
+        aspect: "1200 / 896",
+        ending:
+          "他伪造立案通知书反过来吓唬中介。这个办法看似解气，却把自己也推向造假的风险；真正稳妥的反击，仍然是保留证据并走正规渠道。",
       },
     ],
   },
@@ -99,6 +150,9 @@ const commentSettings = document.querySelector("#comment-settings");
 const bubbleSizeInput = document.querySelector("#comment-bubble-size");
 const coverPage = document.querySelector("#cover-page");
 const coverEnter = document.querySelector("#cover-enter");
+const comicLightbox = document.querySelector("#comic-lightbox");
+const comicLightboxFrame = document.querySelector("#comic-lightbox-frame");
+const comicLightboxClose = document.querySelector("#comic-lightbox-close");
 
 let currentChapterIndex = 0;
 let isAnimating = false;
@@ -179,6 +233,8 @@ function buildChapter(chapter, index) {
 
   chapter.panels.forEach((panel) => {
     const panelNode = createPanel(panel);
+    panelNode.classList.add("is-readable");
+    panelNode.dataset.aspect = panel.aspect || "";
     grid.append(panelNode);
   });
 
@@ -195,6 +251,7 @@ function buildChapter(chapter, index) {
   options.addEventListener("pointerdown", handlePointerDown);
   options.addEventListener("pointermove", handleOptionHoverMove);
   options.addEventListener("pointerleave", handleOptionHoverLeave);
+  grid.addEventListener("click", handlePanelZoomClick);
 
   return chapterNode;
 }
@@ -238,7 +295,7 @@ function clearTypewriterTimers() {
 
 function handlePointerDown(event) {
   const optionCard = event.target.closest(".is-option");
-  if (!optionCard || isAnimating) {
+  if (!optionCard || isAnimating || !isCurrentChapterReadyForOptions(optionCard)) {
     return;
   }
 
@@ -295,7 +352,7 @@ function handlePointerMove(event) {
 }
 
 function handleOptionHoverMove(event) {
-  if (isAnimating || activeDrag) {
+  if (isAnimating || activeDrag || !event.currentTarget.closest(".option-strip.is-visible")) {
     return;
   }
 
@@ -326,6 +383,46 @@ function handleOptionHoverLeave(event) {
   event.currentTarget.querySelectorAll(".is-option").forEach((option) => {
     option.classList.remove("is-hover-left", "is-hover-right", "is-hover-center");
   });
+}
+
+function isCurrentChapterReadyForOptions(optionCard) {
+  const chapterNode = optionCard.closest(".chapter");
+  if (!chapterNode || chapterNode !== track.children[currentChapterIndex]) {
+    return false;
+  }
+
+  const firstPanelsVisible = [...chapterNode.querySelectorAll(".chapter-grid .comic-panel")]
+    .slice(0, 3)
+    .every((panel) => panel.classList.contains("is-visible"));
+  return firstPanelsVisible && chapterNode.querySelector(".option-strip")?.classList.contains("is-visible");
+}
+
+function handlePanelZoomClick(event) {
+  const panel = event.target.closest(".comic-panel.is-readable.is-visible");
+  if (!panel || panel.closest(".chapter") !== track.children[currentChapterIndex]) {
+    return;
+  }
+
+  openComicLightbox(panel.dataset.image, panel.dataset.aspect || panel.style.getPropertyValue("--panel-aspect"));
+}
+
+function openComicLightbox(image, aspect) {
+  if (!image || !comicLightbox || !comicLightboxFrame) {
+    return;
+  }
+
+  comicLightboxFrame.style.backgroundImage = `url("${image}")`;
+  comicLightboxFrame.style.setProperty("--lightbox-aspect", aspect || "1200 / 896");
+  comicLightbox.hidden = false;
+}
+
+function closeComicLightbox() {
+  if (!comicLightbox || !comicLightboxFrame) {
+    return;
+  }
+
+  comicLightbox.hidden = true;
+  comicLightboxFrame.style.backgroundImage = "";
 }
 
 function handlePointerUp(event) {
@@ -1515,10 +1612,25 @@ function setupCoverPage() {
   preloadStoryAssets();
   setupCommentQr();
   setupCommentBubbles();
+  setupComicLightbox();
   coverEnter?.addEventListener("click", startStory);
   coverPage?.addEventListener("click", (event) => {
     if (event.target === coverPage) {
       startStory();
+    }
+  });
+}
+
+function setupComicLightbox() {
+  comicLightboxClose?.addEventListener("click", closeComicLightbox);
+  comicLightbox?.addEventListener("click", (event) => {
+    if (event.target === comicLightbox) {
+      closeComicLightbox();
+    }
+  });
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !comicLightbox?.hidden) {
+      closeComicLightbox();
     }
   });
 }

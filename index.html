@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>失信漫画平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=contain-transitions" />
+    <link rel="stylesheet" href="./styles.css?v=overview-wrap" />
     <link rel="preload" as="image" href="./assets/optimized/1A.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1B.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1C.jpg" />
@@ -12,6 +12,20 @@
     <link rel="preload" as="image" href="./assets/optimized/1D-2.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1D-3.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1D-4.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2A.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2B.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2C.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2D-1.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2D-2.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2D-3.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/2D-4.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3A.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3B.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3C.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3D-1.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3D-2.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3D-3.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/3D-4.jpg" />
   </head>
   <body>
     <section class="cover-page" id="cover-page" aria-label="留学中介畅所欲言区">
@@ -98,6 +112,11 @@
       </article>
     </template>
 
-    <script type="module" src="./script.js?v=contain-transitions"></script>
+    <div class="comic-lightbox" id="comic-lightbox" hidden>
+      <button class="comic-lightbox__close" id="comic-lightbox-close" type="button" aria-label="关闭放大漫画">×</button>
+      <div class="comic-lightbox__frame" id="comic-lightbox-frame"></div>
+    </div>
+
+    <script type="module" src="./script.js?v=panel-lightbox"></script>
   </body>
 </html>

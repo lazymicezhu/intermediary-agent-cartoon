@@ -155,16 +155,22 @@ input {
 
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 18px 36px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 560px));
+  justify-content: center;
+  gap: 44px 48px;
+  width: 100%;
+  max-width: calc(560px * 2 + 48px);
+  margin: 0 auto;
 }
 
 .overview-chapter {
+  --main-panel-size: clamp(190px, 13vw, 260px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  justify-content: center;
+  gap: 12px;
+  justify-content: flex-start;
+  min-width: 0;
 }
 
 .overview-label {
@@ -185,10 +191,9 @@ input {
 }
 
 .overview-chapter .chapter-grid {
-  transform: scale(var(--overview-scale));
+  transform: none;
   transform-origin: top center;
   margin: 0;
-  margin-bottom: calc(((var(--main-panel-size) * 1.48) + 18px) * -0.18);
 }
 
 .chapter-track {
@@ -328,7 +333,7 @@ input {
   border-radius: 0;
   overflow: hidden;
   background-position: center;
-  background-size: contain;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-color: #fffdf7;
   transition:
@@ -345,12 +350,16 @@ input {
   background: transparent;
   opacity: 0;
   transform: translateY(16px);
+  visibility: hidden;
+  pointer-events: none;
   transition: opacity 420ms ease, transform 420ms ease;
 }
 
 .option-strip.is-visible {
   opacity: 1;
   transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .option-strip__title {
@@ -379,8 +388,59 @@ input {
   opacity: 0;
 }
 
+.comic-panel.is-readable {
+  cursor: zoom-in;
+}
+
+.comic-panel.is-readable:hover {
+  border-color: #f0c64d;
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.16);
+}
+
 .chapter.is-transitioning .option-strip {
   pointer-events: none;
+}
+
+.comic-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 36px;
+  background: rgba(20, 20, 20, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+.comic-lightbox[hidden] {
+  display: none;
+}
+
+.comic-lightbox__frame {
+  width: min(92vw, 1180px);
+  max-height: 86vh;
+  aspect-ratio: var(--lightbox-aspect, 1200 / 896);
+  border: 5px solid #111;
+  background-color: #fffdf7;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+}
+
+.comic-lightbox__close {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .chapter.is-transitioning .comic-panel.is-option.is-used {
