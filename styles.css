@@ -173,6 +173,16 @@ input {
   min-width: 0;
 }
 
+.overview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  width: 100vw;
+  margin: 36px 0 0 calc(50% - 50vw);
+  padding-bottom: 48px;
+}
+
 .overview-label {
   font-size: 0.95rem;
   font-weight: 700;
@@ -233,6 +243,39 @@ input {
 .chapter-caption.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.chapter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: -26px;
+}
+
+.chapter-actions[hidden] {
+  display: none;
+}
+
+.chapter-action {
+  min-width: 112px;
+  min-height: 42px;
+  border: 3px solid #111;
+  border-radius: 0;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.chapter-action:hover {
+  background: #fff;
+  color: #111;
+  transform: translateY(-2px);
 }
 
 .chapter-grid {
@@ -441,6 +484,35 @@ input {
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
+}
+
+.comic-lightbox__nav {
+  position: fixed;
+  top: 50%;
+  width: 52px;
+  height: 72px;
+  border: 0;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font-size: 3.2rem;
+  line-height: 1;
+  transform: translateY(-50%);
+  cursor: pointer;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+}
+
+.comic-lightbox__nav--prev {
+  left: 22px;
+}
+
+.comic-lightbox__nav--next {
+  right: 22px;
+}
+
+.comic-lightbox__nav:disabled {
+  opacity: 0.24;
+  cursor: default;
 }
 
 .chapter.is-transitioning .comic-panel.is-option.is-used {

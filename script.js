@@ -1,4 +1,4 @@
-const chapterData = [
+const allChapterData = [
   {
     caption: "中介把小心思藏进合同字缝里：原本承诺“不成功全额退款”，却多塞进一个极小的“不”，让保障悄悄变成“不成功不全额退款”。",
     panels: [
@@ -128,7 +128,138 @@ const chapterData = [
       },
     ],
   },
+  {
+    caption: "保录广告把焦虑包装成包过承诺，中介用“不满意全额退款”和专业团队催人签约。等服务过程问题频出、拒信一封接一封到来，学生才发现承诺和方案都经不起追问。",
+    panels: [
+      {
+        image: "./assets/optimized/4A.jpg",
+        aspect: "900 / 816",
+      },
+      {
+        image: "./assets/optimized/4B.jpg",
+        aspect: "900 / 816",
+      },
+      {
+        image: "./assets/optimized/4C.jpg",
+        aspect: "900 / 816",
+      },
+    ],
+    options: [
+      {
+        image: "./assets/optimized/4D-1.jpg",
+        aspect: "600 / 515",
+        ending:
+          "他选择积极维权，整理聊天记录、合同和付款凭证，最终拿回部分退款。虽然过程辛苦，但这次教训让他之后的申请更谨慎。",
+      },
+      {
+        image: "./assets/optimized/4D-2.jpg",
+        aspect: "600 / 513",
+        ending:
+          "他吸取教训，转而自己规划和 DIY 申请。过程比想象中更辛苦，但每一步都踏实可控，最后收获理想 offer。",
+      },
+      {
+        image: "./assets/optimized/4D-3.jpg",
+        aspect: "600 / 513",
+        ending:
+          "他更换了更靠谱的中介，重新确认服务边界、合同条款和申请节奏。信息透明后，申请终于回到正轨，并顺利拿到心仪学校的 offer。",
+      },
+      {
+        image: "./assets/optimized/4D-4.jpg",
+        aspect: "600 / 513",
+        ending:
+          "他因为这次失信经历彻底失去信心，选择放弃留学。后来再回想起这段本可以重新规划的申请，只剩下难以弥补的遗憾。",
+      },
+    ],
+  },
+  {
+    caption: "Tang与中介谈妥申请方案并支付大额定金。签约前的承诺很快变成签约后的失联、拖延和敷衍回复，Tang这才意识到，真正被锁住的不是名校机会，而是自己的申请时间。",
+    panels: [
+      {
+        image: "./assets/optimized/5A.jpg",
+        aspect: "900 / 672",
+      },
+      {
+        image: "./assets/optimized/5B.jpg",
+        aspect: "900 / 672",
+      },
+      {
+        image: "./assets/optimized/5C.jpg",
+        aspect: "900 / 672",
+      },
+    ],
+    options: [
+      {
+        image: "./assets/optimized/5D-1.jpg",
+        aspect: "600 / 448",
+        ending:
+          "Tang觉得已经付了钱，只好继续催促和等待。中介一拖再拖，最终错过所有截止日期，Tang被迫 gap 一年，定金也打了水漂。",
+      },
+      {
+        image: "./assets/optimized/5D-2.jpg",
+        aspect: "600 / 448",
+        ending:
+          "Tang在网上发布避雷帖，引来许多同样遭遇的同学集体维权。中介迫于压力退还了部分费用，但Tang的申请季已被耽误，只能自己匆忙补救。",
+      },
+      {
+        image: "./assets/optimized/5D-3.jpg",
+        aspect: "600 / 448",
+        ending:
+          "Tang果断放弃这家中介，不再纠缠定金，立刻自己动手写文书、联系推荐人。虽然损失了钱，但凭借自己的努力赶上申请，拿到一所不错的录取。",
+      },
+      {
+        image: "./assets/optimized/5D-4.jpg",
+        aspect: "600 / 448",
+        ending:
+          "Tang收集聊天记录和转账凭证，向12315和行业协会投诉。耗时两个月后要回大半定金，但已经错过当季申请，只能重新准备下一年的材料。",
+      },
+    ],
+  },
+  {
+    caption: "中介把“海外教授科研项目、附推荐信、提升背景”包装成申请捷径。付款后学生才发现，所谓教授指导变成模板网课和助教群发任务，推荐信来源也无法核验。",
+    panels: [
+      {
+        image: "./assets/optimized/6A.jpg",
+        aspect: "900 / 672",
+      },
+      {
+        image: "./assets/optimized/6B.jpg",
+        aspect: "900 / 672",
+      },
+      {
+        image: "./assets/optimized/6C.jpg",
+        aspect: "900 / 672",
+      },
+    ],
+    options: [
+      {
+        image: "./assets/optimized/6D-1.jpg",
+        aspect: "600 / 448",
+        ending:
+          "他继续配合包装，把项目写进申请材料。学校核验时质疑推荐信来源和项目真实性，这段背景经历反而变成了风险点。",
+      },
+      {
+        image: "./assets/optimized/6D-2.jpg",
+        aspect: "600 / 448",
+        ending:
+          "他要求核验教授身份、授权文件和官方邮箱，发现项目授权模糊后及时终止，并保存付款记录和宣传截图作为证据。",
+      },
+      {
+        image: "./assets/optimized/6D-3.jpg",
+        aspect: "600 / 448",
+        ending:
+          "他放弃这类包装项目，转向真实课题、公开项目和可验证经历。虽然损失了部分费用，但申请材料重新回到可信轨道。",
+      },
+      {
+        image: "./assets/optimized/6D-4.jpg",
+        aspect: "600 / 448",
+        ending:
+          "他整理项目截图、聊天记录和付款凭证公开提醒同学，多人因此避坑，中介下架了宣传。但真正维权仍需要完整证据链支撑。",
+      },
+    ],
+  },
 ];
+
+const chapterData = allChapterData.slice(0, 4);
 
 const revealDelay = 1500;
 const dissolveDuration = 1200;
@@ -140,6 +271,8 @@ const overviewChapterTemplate = document.querySelector("#overview-chapter-templa
 const storyStage = document.querySelector(".story-stage");
 const chapterOverview = document.querySelector("#chapter-overview");
 const overviewGrid = document.querySelector("#overview-grid");
+const overviewReplay = document.querySelector("#overview-replay");
+const overviewComment = document.querySelector("#overview-comment");
 const commentBubbleLayer = document.querySelector("#comment-bubble-layer");
 const commentQr = document.querySelector("#comment-qr");
 const commentQrLink = document.querySelector("#comment-qr-link");
@@ -153,6 +286,8 @@ const coverEnter = document.querySelector("#cover-enter");
 const comicLightbox = document.querySelector("#comic-lightbox");
 const comicLightboxFrame = document.querySelector("#comic-lightbox-frame");
 const comicLightboxClose = document.querySelector("#comic-lightbox-close");
+const comicLightboxPrev = document.querySelector("#comic-lightbox-prev");
+const comicLightboxNext = document.querySelector("#comic-lightbox-next");
 
 let currentChapterIndex = 0;
 let isAnimating = false;
@@ -185,6 +320,8 @@ let draggedBubble = null;
 let lastBubbleFrame = 0;
 let lastReplySyncAt = 0;
 let storyStarted = false;
+let lightboxItems = [];
+let lightboxIndex = 0;
 const preloadedAssets = new Set();
 const screenId = getScreenId();
 let lastScreenHeartbeatAt = 0;
@@ -230,6 +367,8 @@ function buildChapter(chapter, index) {
   const chapterNode = chapterTemplate.content.firstElementChild.cloneNode(true);
   const grid = chapterNode.querySelector(".chapter-grid");
   const options = chapterNode.querySelector(".options");
+  const actions = chapterNode.querySelector(".chapter-actions");
+  chapterNode.dataset.chapterIndex = String(index);
 
   chapter.panels.forEach((panel) => {
     const panelNode = createPanel(panel);
@@ -252,6 +391,7 @@ function buildChapter(chapter, index) {
   options.addEventListener("pointermove", handleOptionHoverMove);
   options.addEventListener("pointerleave", handleOptionHoverLeave);
   grid.addEventListener("click", handlePanelZoomClick);
+  actions.addEventListener("click", handleChapterActionClick);
 
   return chapterNode;
 }
@@ -261,8 +401,10 @@ function revealPanels(chapterNode) {
 
   const gridPanels = [...chapterNode.querySelectorAll(".chapter-grid .comic-panel")];
   const optionStrip = chapterNode.querySelector(".option-strip");
+  const actions = chapterNode.querySelector(".chapter-actions");
   gridPanels.forEach((panel) => panel.classList.remove("is-visible"));
   optionStrip.classList.remove("is-visible");
+  actions.hidden = true;
 
   gridPanels.slice(0, 3).forEach((panel, index) => {
     const timeoutId = window.setTimeout(() => {
@@ -403,17 +545,80 @@ function handlePanelZoomClick(event) {
     return;
   }
 
-  openComicLightbox(panel.dataset.image, panel.dataset.aspect || panel.style.getPropertyValue("--panel-aspect"));
+  const readablePanels = [...panel.closest(".chapter-grid").querySelectorAll(".comic-panel.is-readable")];
+  openComicLightbox(
+    getChapterLightboxItems(currentChapterIndex),
+    Math.max(0, readablePanels.indexOf(panel)),
+  );
 }
 
-function openComicLightbox(image, aspect) {
-  if (!image || !comicLightbox || !comicLightboxFrame) {
+function handleOverviewPanelZoomClick(event) {
+  const panel = event.target.closest(".comic-panel.is-readable.is-visible");
+  if (!panel) {
     return;
   }
 
-  comicLightboxFrame.style.backgroundImage = `url("${image}")`;
-  comicLightboxFrame.style.setProperty("--lightbox-aspect", aspect || "1200 / 896");
+  const chapterIndex = Number(panel.dataset.overviewChapterIndex);
+  const panelIndex = Number(panel.dataset.overviewPanelIndex);
+  if (!Number.isFinite(chapterIndex) || !Number.isFinite(panelIndex)) {
+    return;
+  }
+
+  openComicLightbox(getOverviewLightboxItems(chapterIndex), panelIndex);
+}
+
+function getChapterLightboxItems(chapterIndex) {
+  return chapterData[chapterIndex].panels.map((panel) => ({
+    image: panel.image,
+    aspect: panel.aspect,
+  }));
+}
+
+function getOverviewLightboxItems(chapterIndex) {
+  const chapter = chapterData[chapterIndex];
+  const selectedOption = selectedOptions.get(chapterIndex);
+  return [
+    ...chapter.panels.map((panel) => ({
+      image: panel.image,
+      aspect: panel.aspect,
+    })),
+    {
+      image: selectedOption?.image ?? chapter.options[0].image,
+      aspect: selectedOption?.aspect ?? chapter.options[0].aspect,
+    },
+  ];
+}
+
+function openComicLightbox(items, index = 0) {
+  if (!items?.length || !comicLightbox || !comicLightboxFrame) {
+    return;
+  }
+
+  lightboxItems = items;
+  lightboxIndex = clamp(index, 0, lightboxItems.length - 1);
+  renderComicLightbox();
   comicLightbox.hidden = false;
+}
+
+function renderComicLightbox() {
+  const item = lightboxItems[lightboxIndex];
+  if (!item) {
+    return;
+  }
+
+  comicLightboxFrame.style.backgroundImage = `url("${item.image}")`;
+  comicLightboxFrame.style.setProperty("--lightbox-aspect", item.aspect || "1200 / 896");
+  comicLightboxPrev.disabled = lightboxIndex <= 0;
+  comicLightboxNext.disabled = lightboxIndex >= lightboxItems.length - 1;
+}
+
+function shiftComicLightbox(direction) {
+  if (comicLightbox?.hidden || !lightboxItems.length) {
+    return;
+  }
+
+  lightboxIndex = clamp(lightboxIndex + direction, 0, lightboxItems.length - 1);
+  renderComicLightbox();
 }
 
 function closeComicLightbox() {
@@ -423,6 +628,8 @@ function closeComicLightbox() {
 
   comicLightbox.hidden = true;
   comicLightboxFrame.style.backgroundImage = "";
+  lightboxItems = [];
+  lightboxIndex = 0;
 }
 
 function handlePointerUp(event) {
@@ -569,7 +776,59 @@ async function runChapterTransition(chapterNode) {
   await wait(320);
 
   dissolvingOptions = [];
-  goToNextChapter();
+  showChapterActions(chapterNode);
+  isAnimating = false;
+}
+
+function showChapterActions(chapterNode) {
+  const chapterIndex = Number(chapterNode.dataset.chapterIndex);
+  const actions = chapterNode.querySelector(".chapter-actions");
+  if (!actions) {
+    return;
+  }
+
+  actions.hidden = false;
+  actions.querySelector('[data-action="previous"]').hidden = chapterIndex === 0;
+  actions.querySelector('[data-action="next"]').hidden = chapterIndex === chapterData.length - 1;
+  actions.querySelector('[data-action="overview"]').hidden = chapterIndex !== chapterData.length - 1;
+}
+
+function hideChapterActions(chapterNode) {
+  chapterNode?.querySelector(".chapter-actions")?.setAttribute("hidden", "");
+}
+
+function handleChapterActionClick(event) {
+  const button = event.target.closest("[data-action]");
+  if (!button || isAnimating) {
+    return;
+  }
+
+  const action = button.dataset.action;
+  if (action === "previous") {
+    navigateToChapter(Math.max(0, currentChapterIndex - 1), {
+      resetFrom: Math.max(0, currentChapterIndex - 1),
+    });
+    return;
+  }
+
+  if (action === "replay") {
+    navigateToChapter(currentChapterIndex, { resetFrom: currentChapterIndex });
+    return;
+  }
+
+  if (action === "next") {
+    navigateToChapter(Math.min(chapterData.length - 1, currentChapterIndex + 1), {
+      resetFrom: Math.min(chapterData.length - 1, currentChapterIndex + 1),
+    });
+    return;
+  }
+
+  if (action === "overview") {
+    isAnimating = true;
+    showAllChaptersOverview(track.children[currentChapterIndex]).finally(() => {
+      isAnimating = false;
+    });
+  }
 }
 
 function getOptionData(optionCard) {
@@ -1530,15 +1789,80 @@ async function goToNextChapter() {
   isAnimating = false;
 }
 
+async function navigateToChapter(targetIndex, { resetFrom = targetIndex } = {}) {
+  const clampedTarget = clamp(targetIndex, 0, chapterData.length - 1);
+  const clampedResetFrom = clamp(resetFrom, 0, chapterData.length - 1);
+  isAnimating = true;
+  cleanupActiveDrag();
+  clearRevealTimers();
+  clearTypewriterTimers();
+  closeComicLightbox();
+  hideChapterActions(track.children[currentChapterIndex]);
+  hideOverview();
+  resetChaptersFrom(clampedResetFrom);
+
+  storyStage.hidden = false;
+  storyStage.style.transition = "";
+  storyStage.style.opacity = "";
+  storyStage.style.transform = "";
+  currentChapterIndex = clampedTarget;
+  track.style.transform = `translateX(-${clampedTarget * 100}%)`;
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  revealPanels(track.children[clampedTarget]);
+
+  await wait(chapterSlideDuration);
+  isAnimating = false;
+}
+
+function resetChaptersFrom(startIndex) {
+  [...selectedOptions.keys()].forEach((chapterIndex) => {
+    if (chapterIndex >= startIndex) {
+      selectedOptions.delete(chapterIndex);
+    }
+  });
+
+  for (let index = startIndex; index < chapterData.length; index += 1) {
+    track.children[index].replaceWith(buildChapter(chapterData[index], index));
+  }
+}
+
+function hideOverview() {
+  chapterOverview.classList.remove("is-visible");
+  chapterOverview.hidden = true;
+  overviewGrid.replaceChildren();
+}
+
+function returnToCoverPage() {
+  isAnimating = false;
+  cleanupActiveDrag();
+  clearRevealTimers();
+  clearTypewriterTimers();
+  closeComicLightbox();
+  selectedOptions.clear();
+  resetChaptersFrom(0);
+  currentChapterIndex = 0;
+  track.style.transform = "";
+  storyStage.hidden = false;
+  storyStage.style.transition = "";
+  storyStage.style.opacity = "";
+  storyStage.style.transform = "";
+  hideOverview();
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  storyStarted = false;
+  coverPage?.classList.remove("is-hidden");
+}
+
 function clearFrozenOptionState(chapterNode) {
   const optionStrip = chapterNode.querySelector(".option-strip");
   const optionsContainer = chapterNode.querySelector(".options");
   const captionNode = chapterNode.querySelector(".chapter-caption");
+  const actions = chapterNode.querySelector(".chapter-actions");
 
   optionStrip.classList.remove("is-visible");
   optionStrip.style.display = "none";
   captionNode.classList.remove("is-visible");
   captionNode.textContent = "";
+  actions.hidden = true;
   optionsContainer.classList.remove("is-frozen");
   optionsContainer.style.width = "";
   optionsContainer.style.height = "";
@@ -1566,6 +1890,9 @@ async function showAllChaptersOverview(currentChapterNode) {
 
     chapter.panels.forEach((panel) => {
       const panelNode = createPanel(panel);
+      panelNode.classList.add("is-readable");
+      panelNode.dataset.overviewChapterIndex = String(chapterIndex);
+      panelNode.dataset.overviewPanelIndex = String(grid.children.length);
       panelNode.classList.add("is-visible");
       grid.append(panelNode);
     });
@@ -1575,8 +1902,12 @@ async function showAllChaptersOverview(currentChapterNode) {
       image: finalImage,
       aspect: selectedOptions.get(chapterIndex)?.aspect ?? chapter.options[0].aspect,
     });
+    finalPanel.classList.add("is-readable");
+    finalPanel.dataset.overviewChapterIndex = String(chapterIndex);
+    finalPanel.dataset.overviewPanelIndex = String(grid.children.length);
     finalPanel.classList.add("is-visible");
     grid.append(finalPanel);
+    grid.addEventListener("click", handleOverviewPanelZoomClick);
 
     overviewGrid.append(chapterCard);
   });
@@ -1613,6 +1944,8 @@ function setupCoverPage() {
   setupCommentQr();
   setupCommentBubbles();
   setupComicLightbox();
+  overviewReplay?.addEventListener("click", replayStoryFromOverview);
+  overviewComment?.addEventListener("click", returnToCoverPage);
   coverEnter?.addEventListener("click", startStory);
   coverPage?.addEventListener("click", (event) => {
     if (event.target === coverPage) {
@@ -1621,8 +1954,24 @@ function setupCoverPage() {
   });
 }
 
+function replayStoryFromOverview() {
+  if (isAnimating) {
+    return;
+  }
+
+  navigateToChapter(0, { resetFrom: 0 });
+}
+
 function setupComicLightbox() {
   comicLightboxClose?.addEventListener("click", closeComicLightbox);
+  comicLightboxPrev?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    shiftComicLightbox(-1);
+  });
+  comicLightboxNext?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    shiftComicLightbox(1);
+  });
   comicLightbox?.addEventListener("click", (event) => {
     if (event.target === comicLightbox) {
       closeComicLightbox();
@@ -1631,6 +1980,16 @@ function setupComicLightbox() {
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !comicLightbox?.hidden) {
       closeComicLightbox();
+      return;
+    }
+
+    if (event.key === "ArrowLeft" && !comicLightbox?.hidden) {
+      shiftComicLightbox(-1);
+      return;
+    }
+
+    if (event.key === "ArrowRight" && !comicLightbox?.hidden) {
+      shiftComicLightbox(1);
     }
   });
 }
@@ -1673,6 +2032,7 @@ function startStory() {
 
   storyStarted = true;
   coverPage?.classList.add("is-hidden");
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   revealPanels(track.children[0]);
 }
 
