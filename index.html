@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>失信漫画平台原型</title>
-    <link rel="stylesheet" href="./styles.css?v=chapter4" />
+    <link rel="stylesheet" href="./styles.css?v=debug-chapters" />
     <link rel="preload" as="image" href="./assets/optimized/1A.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1B.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/1C.jpg" />
@@ -33,6 +33,20 @@
     <link rel="preload" as="image" href="./assets/optimized/4D-2.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/4D-3.jpg" />
     <link rel="preload" as="image" href="./assets/optimized/4D-4.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5A.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5B.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5C.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5D-1.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5D-2.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5D-3.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/5D-4.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6A.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6B.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6C.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6D-1.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6D-2.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6D-3.jpg" />
+    <link rel="preload" as="image" href="./assets/optimized/6D-4.jpg" />
   </head>
   <body>
     <section class="cover-page" id="cover-page" aria-label="留学中介畅所欲言区">
@@ -95,8 +109,18 @@
             <span>正常</span>
           </span>
         </label>
+        <label class="debug-password-control" for="debug-password">
+          <span>调试模式</span>
+          <input id="debug-password" type="password" autocomplete="off" placeholder="输入密码" />
+        </label>
       </div>
     </aside>
+
+    <div class="debug-controls" id="debug-controls" hidden>
+      <button class="chapter-action" id="debug-play" type="button">播放动画</button>
+      <button class="chapter-action" id="debug-finish" type="button">结束动画</button>
+      <button class="chapter-action" id="debug-next" type="button">快捷下一章</button>
+    </div>
 
     <template id="chapter-template">
       <article class="chapter">
@@ -136,6 +160,6 @@
       <button class="comic-lightbox__nav comic-lightbox__nav--next" id="comic-lightbox-next" type="button" aria-label="下一张漫画">›</button>
     </div>
 
-    <script type="module" src="./script.js?v=chapter4"></script>
+    <script type="module" src="./script.js?v=debug-chapters"></script>
   </body>
 </html>

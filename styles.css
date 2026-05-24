@@ -951,6 +951,54 @@ input {
   font-size: 0.72rem;
 }
 
+.debug-password-control {
+  display: grid;
+  gap: 6px;
+  color: rgba(20, 20, 20, 0.58);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.debug-password-control input {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  border: 1px solid rgba(20, 20, 20, 0.24);
+  border-radius: 0;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #141414;
+  font: inherit;
+  font-size: 0.78rem;
+}
+
+.debug-controls {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 80;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: min(520px, calc(100vw - 32px));
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 2px solid rgba(20, 20, 20, 0.54);
+  box-shadow: 0 18px 38px rgba(20, 20, 20, 0.16);
+  transform: translateX(-50%);
+}
+
+.debug-controls[hidden] {
+  display: none;
+}
+
+.debug-controls .chapter-action {
+  min-width: 128px;
+  min-height: 38px;
+  font-size: 0.82rem;
+}
+
 .comment-toggle {
   position: relative;
   width: 46px;
@@ -1494,6 +1542,19 @@ input {
     right: auto;
     bottom: 52px;
     width: min(188px, calc(100vw - 24px));
+  }
+
+  .debug-controls {
+    bottom: 10px;
+    width: min(420px, calc(100vw - 20px));
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .debug-controls .chapter-action {
+    min-width: 104px;
+    min-height: 34px;
+    font-size: 0.74rem;
   }
 
   .comment-qr.settings-open-left .comment-settings {

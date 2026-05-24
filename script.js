@@ -172,7 +172,7 @@ const allChapterData = [
     ],
   },
   {
-    caption: "Tang与中介谈妥申请方案并支付大额定金。签约前的承诺很快变成签约后的失联、拖延和敷衍回复，Tang这才意识到，真正被锁住的不是名校机会，而是自己的申请时间。",
+    caption: "李女士花70万通过中介申请上香港大学。读了一年多后，她突然接到校方通知：入学材料存在问题，她被退学。直到这时她才发现，中介伪造了自己的入学材料。",
     panels: [
       {
         image: "./assets/optimized/5A.jpg",
@@ -192,30 +192,30 @@ const allChapterData = [
         image: "./assets/optimized/5D-1.jpg",
         aspect: "600 / 448",
         ending:
-          "Tang觉得已经付了钱，只好继续催促和等待。中介一拖再拖，最终错过所有截止日期，Tang被迫 gap 一年，定金也打了水漂。",
+          "李女士拿着70万重新申请了一所普通大学。但每次面试被问及那段港大经历时，她只能含糊其辞。钱回来了，信任和一年多的光阴却永远留在了谎言的废墟上。",
       },
       {
         image: "./assets/optimized/5D-2.jpg",
         aspect: "600 / 448",
         ending:
-          "Tang在网上发布避雷帖，引来许多同样遭遇的同学集体维权。中介迫于压力退还了部分费用，但Tang的申请季已被耽误，只能自己匆忙补救。",
+          "机构反手拿出李女士签字的“材料由客户自行提供”协议，法院判她败诉。她这才明白，当初贪图捷径签下的字，比造假本身更难翻盘。",
       },
       {
         image: "./assets/optimized/5D-3.jpg",
-        aspect: "600 / 448",
+        aspect: "600 / 442",
         ending:
-          "Tang果断放弃这家中介，不再纠缠定金，立刻自己动手写文书、联系推荐人。虽然损失了钱，但凭借自己的努力赶上申请，拿到一所不错的录取。",
+          "机构被查封，负责人入狱。李女士却因曾配合造假被列入教育诚信黑名单，三年内不得申请任何境外学历。她成了扳倒骗局的人，也成了自己人生的祭品。",
       },
       {
         image: "./assets/optimized/5D-4.jpg",
         aspect: "600 / 448",
         ending:
-          "Tang收集聊天记录和转账凭证，向12315和行业协会投诉。耗时两个月后要回大半定金，但已经错过当季申请，只能重新准备下一年的材料。",
+          "机构法人被判刑。李女士因主动举报并配合调查，没有被追究责任。两年后，她凭自己申请到的新 offer，重新开始了真正的留学之路。",
       },
     ],
   },
   {
-    caption: "中介把“海外教授科研项目、附推荐信、提升背景”包装成申请捷径。付款后学生才发现，所谓教授指导变成模板网课和助教群发任务，推荐信来源也无法核验。",
+    caption: "小王向中介支付定金，通过中介拿到了某大学录取通知书。检查后他发现，中介竟是靠伪造他在国外读本科的材料申请上的。他要求解除合同并退款，却被法院判定中介确实拿到了 offer。",
     panels: [
       {
         image: "./assets/optimized/6A.jpg",
@@ -223,7 +223,7 @@ const allChapterData = [
       },
       {
         image: "./assets/optimized/6B.jpg",
-        aspect: "900 / 672",
+        aspect: "900 / 578",
       },
       {
         image: "./assets/optimized/6C.jpg",
@@ -235,31 +235,31 @@ const allChapterData = [
         image: "./assets/optimized/6D-1.jpg",
         aspect: "600 / 448",
         ending:
-          "他继续配合包装，把项目写进申请材料。学校核验时质疑推荐信来源和项目真实性，这段背景经历反而变成了风险点。",
+          "由于难以举证，法院同意解除合同，但不支持退定金和利息。小王白花了诉讼费，拿回的钱还不够请律师。他以为法律会惩罚造假，没想到先惩罚了自己的天真。",
       },
       {
         image: "./assets/optimized/6D-2.jpg",
         aspect: "600 / 448",
         ending:
-          "他要求核验教授身份、授权文件和官方邮箱，发现项目授权模糊后及时终止，并保存付款记录和宣传截图作为证据。",
+          "中介被刑事立案，大学撤销了伪造的录取通知书。小王虽付了尾款，却因主动举报立功，未被追究共犯责任。他用一笔钱买回了履历上的清白。",
       },
       {
         image: "./assets/optimized/6D-3.jpg",
-        aspect: "600 / 448",
+        aspect: "600 / 388",
         ending:
-          "他放弃这类包装项目，转向真实课题、公开项目和可验证经历。虽然损失了部分费用，但申请材料重新回到可信轨道。",
+          "二审法院改判中介欺诈，合同无效，中介返还定金并赔偿小王1万元。但小王因配合造假被大学列入黑名单，三年内不得申请。他赢了官司，却输了前程。",
       },
       {
         image: "./assets/optimized/6D-4.jpg",
         aspect: "600 / 448",
         ending:
-          "他整理项目截图、聊天记录和付款凭证公开提醒同学，多人因此避坑，中介下架了宣传。但真正维权仍需要完整证据链支撑。",
+          "中介因自知理亏，最终放弃追讨尾款。小王拿到真实学位后反诉中介伪造文书，获赔5万元。他用自己的路绕过陷阱，还顺带把坑填了。",
       },
     ],
   },
 ];
 
-const chapterData = allChapterData.slice(0, 4);
+const chapterData = allChapterData;
 
 const revealDelay = 1500;
 const dissolveDuration = 1200;
@@ -281,6 +281,11 @@ const commentToggle = document.querySelector("#comment-toggle");
 const commentSettingsToggle = document.querySelector("#comment-settings-toggle");
 const commentSettings = document.querySelector("#comment-settings");
 const bubbleSizeInput = document.querySelector("#comment-bubble-size");
+const debugPasswordInput = document.querySelector("#debug-password");
+const debugControls = document.querySelector("#debug-controls");
+const debugPlay = document.querySelector("#debug-play");
+const debugFinish = document.querySelector("#debug-finish");
+const debugNext = document.querySelector("#debug-next");
 const coverPage = document.querySelector("#cover-page");
 const coverEnter = document.querySelector("#cover-enter");
 const comicLightbox = document.querySelector("#comic-lightbox");
@@ -301,6 +306,7 @@ const localCommentKey = "cartoon-comments";
 const screenIdKey = "cartoon-screen-id";
 const commentBubblesEnabledKey = "comment-bubbles-enabled";
 const commentBubbleSizeKey = "comment-bubble-size";
+const debugModeKey = "cartoon-debug-mode";
 const bubbleSafeTop = 24;
 const bubbleSizeScales = [0.68, 0.84, 1];
 const seenCommentIds = new Set();
@@ -1944,6 +1950,7 @@ function setupCoverPage() {
   setupCommentQr();
   setupCommentBubbles();
   setupComicLightbox();
+  setupDebugControls();
   overviewReplay?.addEventListener("click", replayStoryFromOverview);
   overviewComment?.addEventListener("click", returnToCoverPage);
   coverEnter?.addEventListener("click", startStory);
@@ -1960,6 +1967,277 @@ function replayStoryFromOverview() {
   }
 
   navigateToChapter(0, { resetFrom: 0 });
+}
+
+function setupDebugControls() {
+  const isDebugEnabled = readJson(debugModeKey, false) === true;
+  setDebugMode(isDebugEnabled);
+
+  if (debugPasswordInput) {
+    debugPasswordInput.addEventListener("input", () => {
+      if (debugPasswordInput.value === "lazymice") {
+        writeJson(debugModeKey, true);
+        debugPasswordInput.value = "";
+        setDebugMode(true);
+      }
+    });
+  }
+
+  debugPlay?.addEventListener("click", handleDebugPlay);
+  debugFinish?.addEventListener("click", handleDebugFinish);
+  debugNext?.addEventListener("click", handleDebugNext);
+}
+
+function setDebugMode(enabled) {
+  if (debugControls) {
+    debugControls.hidden = !enabled;
+  }
+  document.body.classList.toggle("debug-mode", enabled);
+}
+
+function getCurrentChapterNode() {
+  return track.children[currentChapterIndex] || null;
+}
+
+function isOverviewVisible() {
+  return Boolean(chapterOverview && !chapterOverview.hidden);
+}
+
+function isChapterReadyForChoice(chapterNode) {
+  return Boolean(chapterNode?.querySelector(".option-strip")?.classList.contains("is-visible"));
+}
+
+function areChapterActionsVisible(chapterNode) {
+  const actions = chapterNode?.querySelector(".chapter-actions");
+  return Boolean(actions && !actions.hidden);
+}
+
+function rebuildChapterAt(index) {
+  const nextChapterNode = buildChapter(chapterData[index], index);
+  track.children[index].replaceWith(nextChapterNode);
+  return nextChapterNode;
+}
+
+function showStoryAtChapter(index) {
+  hideOverview();
+  storyStarted = true;
+  coverPage?.classList.add("is-hidden");
+  storyStage.hidden = false;
+  storyStage.style.transition = "";
+  storyStage.style.opacity = "";
+  storyStage.style.transform = "";
+  currentChapterIndex = clamp(index, 0, chapterData.length - 1);
+  track.style.transform = `translateX(-${currentChapterIndex * 100}%)`;
+}
+
+function showChapterReadyForChoice(index = currentChapterIndex) {
+  cleanupActiveDrag();
+  clearRevealTimers();
+  clearTypewriterTimers();
+  closeComicLightbox();
+  showStoryAtChapter(index);
+  const chapterNode = rebuildChapterAt(index);
+  const panels = [...chapterNode.querySelectorAll(".chapter-grid .comic-panel")];
+  panels.forEach((panel) => panel.classList.add("is-visible"));
+  const optionStrip = chapterNode.querySelector(".option-strip");
+  optionStrip.style.display = "";
+  optionStrip.classList.add("is-visible");
+  const captionNode = chapterNode.querySelector(".chapter-caption");
+  captionNode.textContent = "";
+  captionNode.classList.remove("is-visible");
+  hideChapterActions(chapterNode);
+  chapterNode.classList.remove("is-transitioning");
+  isAnimating = false;
+  return chapterNode;
+}
+
+function showSelectedChapterEnding(index = currentChapterIndex) {
+  const selectedOption = selectedOptions.get(index) ?? chapterData[index].options[0];
+  selectedOptions.set(index, selectedOption);
+  cleanupActiveDrag();
+  clearRevealTimers();
+  clearTypewriterTimers();
+  closeComicLightbox();
+  showStoryAtChapter(index);
+  const chapterNode = rebuildChapterAt(index);
+  const panels = [...chapterNode.querySelectorAll(".chapter-grid .comic-panel")];
+  panels.slice(0, 3).forEach((panel) => panel.classList.add("is-visible"));
+
+  const slot = panels[3];
+  slot.className = "comic-panel is-visible";
+  slot.dataset.role = "filled-slot";
+  slot.dataset.image = selectedOption.image;
+  slot.style.setProperty("--panel-aspect", selectedOption.aspect || chapterData[index].panels[0]?.aspect || "1 / 1");
+  applyPanelImage(slot, selectedOption.image);
+
+  const optionStrip = chapterNode.querySelector(".option-strip");
+  optionStrip.style.display = "";
+  optionStrip.classList.remove("is-visible");
+  const captionNode = chapterNode.querySelector(".chapter-caption");
+  captionNode.textContent = selectedOption.ending || chapterData[index].caption;
+  captionNode.classList.add("is-visible");
+  chapterNode.classList.remove("is-transitioning");
+  dissolvingOptions = [];
+  showChapterActions(chapterNode);
+  isAnimating = false;
+  return chapterNode;
+}
+
+function replaySelectedChapterTransition(index = currentChapterIndex) {
+  const selectedOption = selectedOptions.get(index);
+  if (!selectedOption) {
+    showChapterReadyForChoice(index);
+    revealPanels(getCurrentChapterNode());
+    return;
+  }
+
+  const chapterNode = showChapterReadyForChoice(index);
+  const optionCard = [...chapterNode.querySelectorAll(".is-option")]
+    .find((option) => option.dataset.image === selectedOption.image)
+    ?? chapterNode.querySelector(".is-option");
+  const slot = chapterNode.querySelector('[data-role="drop-slot"]');
+  if (!optionCard || !slot) {
+    showSelectedChapterEnding(index);
+    return;
+  }
+
+  fillSlot(slot, optionCard);
+}
+
+function renderOverviewCards() {
+  overviewGrid.replaceChildren();
+  chapterData.forEach((chapter, chapterIndex) => {
+    const chapterCard = overviewChapterTemplate.content.firstElementChild.cloneNode(true);
+    const grid = chapterCard.querySelector(".chapter-grid");
+    chapterCard.querySelector(".overview-label").textContent = `第 ${chapterIndex + 1} 章`;
+    chapterCard.querySelector(".overview-caption").textContent = getSelectedCaption(chapterIndex);
+
+    chapter.panels.forEach((panel) => {
+      const panelNode = createPanel(panel);
+      panelNode.classList.add("is-readable", "is-visible");
+      panelNode.dataset.overviewChapterIndex = String(chapterIndex);
+      panelNode.dataset.overviewPanelIndex = String(grid.children.length);
+      grid.append(panelNode);
+    });
+
+    const finalImage = selectedOptions.get(chapterIndex)?.image ?? chapter.options[0].image;
+    const finalPanel = createPanel({
+      image: finalImage,
+      aspect: selectedOptions.get(chapterIndex)?.aspect ?? chapter.options[0].aspect,
+    });
+    finalPanel.classList.add("is-readable", "is-visible");
+    finalPanel.dataset.overviewChapterIndex = String(chapterIndex);
+    finalPanel.dataset.overviewPanelIndex = String(grid.children.length);
+    grid.append(finalPanel);
+    grid.addEventListener("click", handleOverviewPanelZoomClick);
+    overviewGrid.append(chapterCard);
+  });
+}
+
+function showOverviewStable() {
+  cleanupActiveDrag();
+  clearRevealTimers();
+  clearTypewriterTimers();
+  closeComicLightbox();
+  renderOverviewCards();
+  storyStarted = true;
+  coverPage?.classList.add("is-hidden");
+  storyStage.hidden = true;
+  chapterOverview.hidden = false;
+  chapterOverview.classList.add("is-visible");
+  storyStage.style.transition = "";
+  storyStage.style.opacity = "";
+  storyStage.style.transform = "";
+  isAnimating = false;
+}
+
+function handleDebugPlay() {
+  if (isOverviewVisible()) {
+    chapterOverview.classList.remove("is-visible");
+    requestAnimationFrame(() => {
+      chapterOverview.classList.add("is-visible");
+    });
+    return;
+  }
+
+  if (!storyStarted) {
+    startStory();
+    return;
+  }
+
+  if (selectedOptions.has(currentChapterIndex)) {
+    replaySelectedChapterTransition(currentChapterIndex);
+    return;
+  }
+
+  const chapterNode = showChapterReadyForChoice(currentChapterIndex);
+  revealPanels(chapterNode);
+}
+
+function handleDebugFinish() {
+  if (isOverviewVisible()) {
+    showOverviewStable();
+    return;
+  }
+
+  if (!storyStarted) {
+    startStory();
+    showChapterReadyForChoice(0);
+    return;
+  }
+
+  if (selectedOptions.has(currentChapterIndex)) {
+    showSelectedChapterEnding(currentChapterIndex);
+    return;
+  }
+
+  showChapterReadyForChoice(currentChapterIndex);
+}
+
+function handleDebugNext() {
+  if (isOverviewVisible()) {
+    showOverviewStable();
+    return;
+  }
+
+  if (!storyStarted) {
+    startStory();
+    showChapterReadyForChoice(0);
+    return;
+  }
+
+  const chapterNode = getCurrentChapterNode();
+  if (!selectedOptions.has(currentChapterIndex)) {
+    if (!isChapterReadyForChoice(chapterNode)) {
+      showChapterReadyForChoice(currentChapterIndex);
+      return;
+    }
+
+    selectedOptions.set(currentChapterIndex, chapterData[currentChapterIndex].options[0]);
+    showSelectedChapterEnding(currentChapterIndex);
+    return;
+  }
+
+  if (!areChapterActionsVisible(chapterNode)) {
+    showSelectedChapterEnding(currentChapterIndex);
+    return;
+  }
+
+  if (currentChapterIndex >= chapterData.length - 1) {
+    showOverviewStable();
+    return;
+  }
+
+  const nextIndex = currentChapterIndex + 1;
+  [...selectedOptions.keys()].forEach((chapterIndex) => {
+    if (chapterIndex >= nextIndex) {
+      selectedOptions.delete(chapterIndex);
+    }
+  });
+  for (let index = nextIndex; index < chapterData.length; index += 1) {
+    track.children[index].replaceWith(buildChapter(chapterData[index], index));
+  }
+  showChapterReadyForChoice(nextIndex);
 }
 
 function setupComicLightbox() {
